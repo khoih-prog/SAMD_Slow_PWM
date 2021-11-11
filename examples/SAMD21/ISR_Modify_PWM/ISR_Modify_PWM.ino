@@ -1,5 +1,5 @@
 /****************************************************************************************************************************
-  ISR_16_PWMs_Array.ino
+  ISR_Modify_PWM.ino
   For SAMD21/SAMD51 boards
   Written by Khoi Hoang
 
@@ -38,6 +38,14 @@
   #define LED_BUILTIN       13
 #endif
 
+#ifndef LED_BLUE
+  #define LED_BLUE          2
+#endif
+
+#ifndef LED_RED
+  #define LED_RED           3
+#endif
+
 #define HW_TIMER_INTERVAL_US      20L
 
 uint64_t startMicros = 0;
@@ -47,6 +55,7 @@ SAMDTimer ITimer(TIMER_TC3);
 
 // Init SAMD timer TIMER_TCC
 //SAMDTimer ITimer(TIMER_TCC);
+
 
 // Init SAMD_Slow_PWM
 SAMD_Slow_PWM ISR_PWM;
@@ -60,101 +69,41 @@ void TimerHandler()
 
 //////////////////////////////////////////////////////
 
-#define NUMBER_ISR_PWMS         8
-
-#define PIN_D2      2
-#define PIN_D7      7
-#define PIN_D8      8
-#define PIN_D9      9
-#define PIN_D10     10
-#define PIN_D11     11
-#define PIN_D12     12
+#define USING_PWM_FREQUENCY     false //true
 
 //////////////////////////////////////////////////////
 
-#define USING_PWM_FREQUENCY     true
-
-//////////////////////////////////////////////////////
-
-// You can assign pins here. Be carefull to select good pin to use or crash, e.g pin 6-11
-uint32_t PWM_Pin[] =
-{  
-   LED_BUILTIN, PIN_D2, PIN_D7, PIN_D8, PIN_D9, PIN_D10, PIN_D11, PIN_D12
-};
-
-// You can assign any interval for any timer here, in microseconds
-uint32_t PWM_Period[] =
-{
-  1000000L,   500000L,   66667L,    50000L,    40000L,   33333L,     25000L,    20000L
-};
+// You can assign pins here. Be carefull to select good pin to use or crash
+uint32_t PWM_Pin    = LED_BUILTIN;
 
 // You can assign any interval for any timer here, in Hz
-double PWM_Freq[NUMBER_ISR_PWMS] =
-{
-  1.0f,  2.0f,  15.0f,  20.0f,  25.0f,  30.0f,  40.0f,  50.0f,
-};
+double PWM_Freq1   = 1.0f;
+// You can assign any interval for any timer here, in Hz
+double PWM_Freq2   = 2.0f;
 
-// You can assign any interval for any timer here, in milliseconds
-uint32_t PWM_DutyCycle[] =
-{
-   5, 10, 20, 30, 40, 50, 60, 70
-};
+// You can assign any interval for any timer here, in microseconds
+uint32_t PWM_Period1 = 1000000 / PWM_Freq1;
+// You can assign any interval for any timer here, in microseconds
+uint32_t PWM_Period2 = 1000000 / PWM_Freq2;
 
-typedef void (*irqCallback)  ();
+// You can assign any duty_cycle for any PWM here, from 0-100
+uint32_t PWM_DutyCycle1  = 10;
+// You can assign any duty_cycle for any PWM here, from 0-100
+uint32_t PWM_DutyCycle2  = 90;
 
-
-// In SAMD, avoid doing something fancy in ISR, for example complex Serial.print with String() argument
-// The pure simple Serial.prints here are just for demonstration and testing. Must be eliminate in working environment
-// Or you can get this run-time error / crash
-void doingSomething0()
-{
-}
-
-void doingSomething1()
-{
-}
-
-void doingSomething2()
-{
-}
-
-void doingSomething3()
-{
-}
-
-void doingSomething4()
-{
-}
-
-void doingSomething5()
-{
-}
-
-void doingSomething6()
-{
-}
-
-void doingSomething7()
-{
-}
-
-
-irqCallback irqCallbackStartFunc[NUMBER_ISR_PWMS] =
-{
-  doingSomething0,  doingSomething1,  doingSomething2,  doingSomething3, 
-  doingSomething4,  doingSomething5,  doingSomething6,  doingSomething7, 
-};
+// Channel number used to identify associated channel
+int channelNum;
 
 ////////////////////////////////////////////////
 
 void setup()
-{ 
+{
   Serial.begin(115200);
   while (!Serial);
 
   delay(2000);
 
-  Serial.print(F("\nStarting ISR_16_PWMs_Array on ")); Serial.println(BOARD_NAME);
+  Serial.print(F("\nStarting ISR_Modify_PWM on ")); Serial.println(BOARD_NAME);
   Serial.println(SAMD_SLOW_PWM_VERSION);
 
   // Interval in microsecs
@@ -166,32 +115,76 @@ void setup()
   else
     Serial.println(F("Can't set ITimer. Select another freq. or timer"));
 
-#if 1
-  // Just to demonstrate, don't use too many ISR Timers if not absolutely necessary
-  // You can use up to 16 timer for each ISR_PWM
-  for (uint16_t i = 0; i < NUMBER_ISR_PWMS; i++)
-  {
-    //void setPWM(uint32_t pin, uint32_t frequency, uint32_t dutycycle
-    // , timer_callback_p StartCallback = nullptr, timer_callback_p StopCallback = nullptr)
+  Serial.print(F("Using PWM Freq = ")); Serial.print(PWM_Freq1); Serial.print(F(", PWM DutyCycle = ")); Serial.println(PWM_DutyCycle1);
 
 #if USING_PWM_FREQUENCY
 
-    // You can use this with PWM_Freq in Hz
-    ISR_PWM.setPWM(PWM_Pin[i], PWM_Freq[i], PWM_DutyCycle[i], irqCallbackStartFunc[i]);
+  // You can use this with PWM_Freq in Hz
+  ISR_PWM.setPWM(PWM_Pin, PWM_Freq1, PWM_DutyCycle1);
 
 #else
-  #if USING_MICROS_RESOLUTION
-    // Or using period in microsecs resolution
-    ISR_PWM.setPWM_Period(PWM_Pin[i], PWM_Period[i], PWM_DutyCycle[i], irqCallbackStartFunc[i]);
-  #else
-    // Or using period in millisecs resolution
-    ISR_PWM.setPWM_Period(PWM_Pin[i], PWM_Period[i] / 1000, PWM_DutyCycle[i], irqCallbackStartFunc[i]);
-  #endif
+#if USING_MICROS_RESOLUTION
+  // Or using period in microsecs resolution
+  channelNum = ISR_PWM.setPWM_Period(PWM_Pin, PWM_Period1, PWM_DutyCycle1);
+#else
+  // Or using period in millisecs resolution
+  channelNum = ISR_PWM.setPWM_Period(PWM_Pin, PWM_Period1 / 1000, PWM_DutyCycle1);
 #endif
-  }
-#endif  
+#endif
 }
+
+////////////////////////////////////////////////
+
+void changePWM()
+{
+  static uint8_t count = 1;
+
+  double PWM_Freq;
+  uint32_t PWM_DutyCycle;
+
+  if (count++ % 2)
+  {
+    PWM_Freq        = PWM_Freq2;
+    PWM_DutyCycle   = PWM_DutyCycle2;
+  }
+  else
+  {
+    PWM_Freq        = PWM_Freq1;
+    PWM_DutyCycle   = PWM_DutyCycle1;
+  }
+
+  // You can use this with PWM_Freq in Hz
+  if (!ISR_PWM.modifyPWMChannel(channelNum, PWM_Pin, PWM_Freq, PWM_DutyCycle))
+  {
+    Serial.println(F("modifyPWMChannel error for PWM_Period"));
+  }
+}
+
+////////////////////////////////////////////////
+
+void changingPWM()
+{
+  static unsigned long changingPWM_timeout = 0;
+
+  static unsigned long current_millis;
+
+#define CHANGING_PWM_INTERVAL    10000L
+
+  current_millis = millis();
+
+  // changePWM every CHANGING_PWM_INTERVAL (10) seconds.
+  if ( (current_millis > changingPWM_timeout) )
+  {
+    if (changingPWM_timeout > 0)
+      changePWM();
+
+    changingPWM_timeout = current_millis + CHANGING_PWM_INTERVAL;
+  }
+}
+
+////////////////////////////////////////////////
 
 void loop()
 {
+  changingPWM();
 }

@@ -12,11 +12,12 @@
   Therefore, their executions are not blocked by bad-behaving functions / tasks.
   This important feature is absolutely necessary for mission-critical tasks.
 
-  Version: 1.0.0
+  Version: 1.1.0
 
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
   1.0.0   K.Hoang      01/10/2021 Initial coding for SAMD21/SAMD51 boards
+  1.1.0   K Hoang      10/11/2021 Add functions to modify PWM settings on-the-fly
 *****************************************************************************************************************************/
 
 #pragma once
@@ -82,7 +83,7 @@
 #include "Arduino.h"
 
 #ifndef SAMD_SLOW_PWM_VERSION
-  #define SAMD_SLOW_PWM_VERSION       "SAMD_Slow_PWM v1.0.0"
+  #define SAMD_SLOW_PWM_VERSION       "SAMD_Slow_PWM v1.1.0"
 #endif
 
 ///////////////////////////////////////////

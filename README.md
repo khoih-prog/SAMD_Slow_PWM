@@ -34,18 +34,26 @@
   * [2. Set PWM Frequency, dutycycle, attach irqCallbackStartFunc and irqCallbackStopFunc functions](#2-Set-PWM-Frequency-dutycycle-attach-irqCallbackStartFunc-and-irqCallbackStopFunc-functions)
 * [Examples](#examples)
   * [For SAMD21](#For-SAMD21)
-    * [  1. ISR_16_PWMs_Array](examples/SAMD21/ISR_16_PWMs_Array)
-    * [  2. ISR_16_PWMs_Array_Complex](examples/SAMD21/ISR_16_PWMs_Array_Complex)
-    * [  3. ISR_16_PWMs_Array_Simple](examples/SAMD21/ISR_16_PWMs_Array_Simple)
+    * [ 1. ISR_16_PWMs_Array](examples/SAMD21/ISR_16_PWMs_Array)
+    * [ 2. ISR_16_PWMs_Array_Complex](examples/SAMD21/ISR_16_PWMs_Array_Complex)
+    * [ 3. ISR_16_PWMs_Array_Simple](examples/SAMD21/ISR_16_PWMs_Array_Simple)
+    * [ 4. ISR_Changing_PWM](examples/SAMD21/ISR_Changing_PWM)
+    * [ 5. ISR_Modify_PWM](examples/SAMD21/ISR_Modify_PWM)
   * [For SAMD51](#For-SAMD51)
-    * [  1. ISR_16_PWMs_Array](examples/SAMD51/ISR_16_PWMs_Array)
-    * [  2. ISR_16_PWMs_Array_Complex](examples/SAMD51/ISR_16_PWMs_Array_Complex)
-    * [  3. ISR_16_PWMs_Array_Simple](examples/SAMD51/ISR_16_PWMs_Array_Simple)
+    * [ 1. ISR_16_PWMs_Array](examples/SAMD51/ISR_16_PWMs_Array)
+    * [ 2. ISR_16_PWMs_Array_Complex](examples/SAMD51/ISR_16_PWMs_Array_Complex)
+    * [ 3. ISR_16_PWMs_Array_Simple](examples/SAMD51/ISR_16_PWMs_Array_Simple)
+    * [ 4. ISR_Changing_PWM](examples/SAMD51/ISR_Changing_PWM)
+    * [ 5. ISR_Modify_PWM](examples/SAMD51/ISR_Modify_PWM)
 * [Example SAMD51 ISR_16_PWMs_Array_Complex](#Example-SAMD51-ISR_16_PWMs_Array_Complex)
 * [Debug Terminal Output Samples](#debug-terminal-output-samples)
   * [1. ISR_16_PWMs_Array_Complex on SAMD_NANO_33_IOT](#1-ISR_16_PWMs_Array_Complex-on-SAMD_NANO_33_IOT)
   * [2. ISR_16_PWMs_Array_Complex on ITSYBITSY_M4](#2-ISR_16_PWMs_Array_Complex-on-ITSYBITSY_M4)
   * [3. ISR_16_PWMs_Array_Complex on SEEED_XIAO_M0](#3-ISR_16_PWMs_Array_Complex-on-SEEED_XIAO_M0)
+  * [4. ISR_Modify_PWM on SAMD_NANO_33_IOT](#4-ISR_Modify_PWM-on-SAMD_NANO_33_IOT)
+  * [5. ISR_Changing_PWM on SAMD_NANO_33_IOT](#5-ISR_Changing_PWM-on-SAMD_NANO_33_IOT)
+  * [6. ISR_Modify_PWM on ITSYBITSY_M4](#6-ISR_Modify_PWM-on-ITSYBITSY_M4)
+  * [7. ISR_Changing_PWM on ITSYBITSY_M4](#7-ISR_Changing_PWM-on-ITSYBITSY_M4)
 * [Debug](#debug)
 * [Troubleshooting](#troubleshooting)
 * [Issues](#issues)
@@ -132,7 +140,7 @@ The catch is **your function is now part of an ISR (Interrupt Service Routine), 
  2. [`Arduino SAMD core 1.8.11+`](https://github.com/arduino/ArduinoCore-samd) for SAMD ARM Cortex-M0+ boards. [![GitHub release](https://img.shields.io/github/release/arduino/ArduinoCore-samd.svg)](https://github.com/arduino/ArduinoCore-samd/releases/latest)
  3. [`Adafruit SAMD core 1.7.5+`](https://github.com/adafruit/ArduinoCore-samd) for SAMD ARM Cortex-M0+ and M4 boards (Nano 33 IoT, etc.). [![GitHub release](https://img.shields.io/github/release/adafruit/ArduinoCore-samd.svg)](https://github.com/adafruit/ArduinoCore-samd/releases/latest)
  4. [`Seeeduino SAMD core 1.8.1+`](https://github.com/Seeed-Studio/ArduinoCore-samd) for SAMD21/SAMD51 boards (XIAO M0, Wio Terminal, etc.). [![Latest release](https://img.shields.io/github/release/Seeed-Studio/ArduinoCore-samd.svg)](https://github.com/Seeed-Studio/ArduinoCore-samd/releases/latest/)
- 5. [`Sparkfun SAMD core 1.8.1+`](https://github.com/sparkfun/Arduino_Boards) for SAMD21/SAMD51 boards (SparkFun_RedBoard_Turbo, SparkFun_SAMD51_Thing_Plus, etc.).
+ 5. [`Sparkfun SAMD core 1.8.3+`](https://github.com/sparkfun/Arduino_Boards) for SAMD21/SAMD51 boards (SparkFun_RedBoard_Turbo, SparkFun_SAMD51_Thing_Plus, etc.).
 
  6. To use with certain example
    - [`SimpleTimer library`](https://github.com/jfturcot/SimpleTimer) for [ISR_16_Timers_Array example](examples/ISR_16_Timers_Array).
@@ -319,12 +327,16 @@ void setup()
  1. [ISR_16_PWMs_Array](examples/SAMD21/ISR_16_PWMs_Array)
  2. [ISR_16_PWMs_Array_Complex](examples/SAMD21/ISR_16_PWMs_Array_Complex)
  3. [ISR_16_PWMs_Array_Simple](examples/SAMD21/ISR_16_PWMs_Array_Simple)
+ 4. [ISR_Changing_PWM](examples/SAMD21/ISR_Changing_PWM)
+ 5. [ISR_Modify_PWM](examples/SAMD21/ISR_Modify_PWM)
  
 #### For SAMD51
 
  1. [ISR_16_PWMs_Array](examples/SAMD51/ISR_16_PWMs_Array)
  2. [ISR_16_PWMs_Array_Complex](examples/SAMD51/ISR_16_PWMs_Array_Complex)
- 3. [ISR_16_PWMs_Array_Simple](examples/SAMD51/ISR_16_PWMs_Array_Simple) 
+ 3. [ISR_16_PWMs_Array_Simple](examples/SAMD51/ISR_16_PWMs_Array_Simple)
+ 4. [ISR_Changing_PWM](examples/SAMD51/ISR_Changing_PWM)
+ 5. [ISR_Modify_PWM](examples/SAMD51/ISR_Modify_PWM) 
 
  
 ---
@@ -468,12 +480,11 @@ uint32_t PWM_Period[] =
    111111L,   100000L,    66667L,    50000L,    40000L,   33333L,     25000L,    20000L
 };
 
-
 // You can assign any interval for any timer here, in Hz
-uint32_t PWM_Freq[] =
+double PWM_Freq[NUMBER_ISR_PWMS] =
 {
-  1,  2,  3,  4,  5,  6,  7,  8,
-  9, 10, 15, 20, 25, 30, 40, 50
+  1.0f,  2.0f,  3.0f,  4.0f,  5.0f,  6.0f,  7.0f,  8.0f,
+  9.0f, 10.0f, 15.0f, 20.0f, 25.0f, 30.0f, 40.0f, 50.0f
 };
 
 // You can assign any interval for any timer here, in milliseconds
@@ -906,12 +917,12 @@ void loop()
 
 ### 1. ISR_16_PWMs_Array_Complex on SAMD_NANO_33_IOT
 
-The following is the sample terminal output when running example [ISR_16_PWMs_Array_Complex](examples/ISR_16_PWMs_Array_Complex) on SAMD_NANO_33_IOT to demonstrate how to use multiple PWM channels with complex callback functions, the accuracy of ISR Hardware PWM-channels, **especially when system is very busy**.  The ISR PWM-channels is **running exactly according to corresponding programmed periods and duty-cycles**
+The following is the sample terminal output when running example [ISR_16_PWMs_Array_Complex](examples/SAMD21/ISR_16_PWMs_Array_Complex) on SAMD_NANO_33_IOT to demonstrate how to use multiple PWM channels with complex callback functions, the accuracy of ISR Hardware PWM-channels, **especially when system is very busy**.  The ISR PWM-channels is **running exactly according to corresponding programmed periods and duty-cycles**
 
 
 ```
 Starting ISR_16_PWMs_Array_Complex on SAMD_NANO_33_IOT
-SAMD_Slow_PWM v1.0.0
+SAMD_Slow_PWM v1.1.0
 [PWM] _period = 20 , frequency = 50000.00
 [PWM] SAMDTimerInterrupt: F_CPU (MHz) = 48 , TIMER_HZ = 48
 [PWM] TC3_Timer::startTimer _Timer = 0x 42002c00 , TC3 = 0x 42002c00
@@ -959,12 +970,12 @@ PWM Channel : 7, programmed Period (us): 20000, actual : 20006, programmed DutyC
 
 ### 2. ISR_16_PWMs_Array_Complex on ITSYBITSY_M4
 
-The following is the sample terminal output when running example [ISR_16_PWMs_Array_Complex](examples/ISR_16_PWMs_Array_Complex) on ITSYBITSY_M4 to demonstrate how to use multiple PWM channels with complex callback functions, the accuracy of ISR Hardware PWM-channels, **especially when system is very busy**.  The ISR PWM-channels is **running exactly according to corresponding programmed periods and duty-cycles**
+The following is the sample terminal output when running example [ISR_16_PWMs_Array_Complex](examples/SAMD51/ISR_16_PWMs_Array_Complex) on ITSYBITSY_M4 to demonstrate how to use multiple PWM channels with complex callback functions, the accuracy of ISR Hardware PWM-channels, **especially when system is very busy**.  The ISR PWM-channels is **running exactly according to corresponding programmed periods and duty-cycles**
 
 
 ```
 Starting ISR_16_PWMs_Array_Complex on ITSYBITSY_M4
-SAMD_Slow_PWM v1.0.0
+SAMD_Slow_PWM v1.1.0
 [PWM] SAMDTimerInterrupt: F_CPU (MHz) = 120 , TIMER_HZ = 48
 [PWM] TC_Timer::startTimer _Timer = 0x 4101c000 , TC3 = 0x 4101c000
 [PWM] SAMD51 TC3 period = 20 , _prescaler = 1
@@ -1027,12 +1038,12 @@ PWM Channel : 15, programmed Period (us): 20000, actual : 19989, programmed Duty
 
 ### 3. ISR_16_PWMs_Array_Complex on SEEED_XIAO_M0
 
-The following is the sample terminal output when running example [ISR_16_PWMs_Array_Complex](examples/ISR_16_PWMs_Array_Complex) on SEEED_XIAO_M0 to demonstrate how to use multiple PWM channels with complex callback functions, the accuracy of ISR Hardware PWM-channels, **especially when system is very busy**.  The ISR PWM-channels is **running exactly according to corresponding programmed periods and duty-cycles**
+The following is the sample terminal output when running example [ISR_16_PWMs_Array_Complex](examples/SAMD21/ISR_16_PWMs_Array_Complex) on SEEED_XIAO_M0 to demonstrate how to use multiple PWM channels with complex callback functions, the accuracy of ISR Hardware PWM-channels, **especially when system is very busy**.  The ISR PWM-channels is **running exactly according to corresponding programmed periods and duty-cycles**
 
 
 ```
 Starting ISR_16_PWMs_Array_Complex on SEEED_XIAO_M0
-SAMD_Slow_PWM v1.0.0
+SAMD_Slow_PWM v1.1.0
 [PWM] _period = 20 , frequency = 50000.00
 [PWM] SAMDTimerInterrupt: F_CPU (MHz) = 48 , TIMER_HZ = 48
 [PWM] TC3_Timer::startTimer _Timer = 0x 42002c00 , TC3 = 0x 42002c00
@@ -1065,6 +1076,103 @@ PWM Channel : 4, programmed Period (us): 40000, actual : 39999, programmed DutyC
 PWM Channel : 5, programmed Period (us): 33333, actual : 33336, programmed DutyCycle : 50, actual : 49.96
 PWM Channel : 6, programmed Period (us): 25000, actual : 24994, programmed DutyCycle : 60, actual : 60.01
 PWM Channel : 7, programmed Period (us): 20000, actual : 20000, programmed DutyCycle : 70, actual : 70.00
+```
+
+---
+
+### 4. ISR_Modify_PWM on SAMD_NANO_33_IOT
+
+The following is the sample terminal output when running example [ISR_Modify_PWM](examples/SAMD21/ISR_Modify_PWM) on **SAMD_NANO_33_IOT** to demonstrate how to modify PWM settings on-the-fly without deleting the PWM channel
+
+```
+Starting ISR_Modify_PWM on SAMD_NANO_33_IOT
+SAMD_Slow_PWM v1.1.0
+[PWM] _period = 20 , frequency = 50000.00
+[PWM] SAMDTimerInterrupt: F_CPU (MHz) = 48 , TIMER_HZ = 48
+[PWM] TC3_Timer::startTimer _Timer = 0x 42002c00 , TC3 = 0x 42002c00
+[PWM] SAMD21 TC3 period = 20 , _prescaler = 1
+[PWM] _compareValue = 959
+Starting ITimer OK, micros() = 2821686
+Using PWM Freq = 1.00, PWM DutyCycle = 10
+Channel : 0	Period : 1000000		OnTime : 100000	Start_Time : 2822762
+Channel : 0	Period : 500000		OnTime : 450000	Start_Time : 12824098
+Channel : 0	Period : 1000000		OnTime : 100000	Start_Time : 22825080
+Channel : 0	Period : 500000		OnTime : 450000	Start_Time : 32826081
+```
+
+---
+
+### 5. ISR_Changing_PWM on SAMD_NANO_33_IOT
+
+The following is the sample terminal output when running example [ISR_Changing_PWM](examples/SAMD21/ISR_Changing_PWM) on **SAMD_NANO_33_IOT** to demonstrate how to modify PWM settings on-the-fly by deleting the PWM channel and reinit the PWM channel
+
+```
+Starting ISR_Changing_PWM on SAMD_NANO_33_IOT
+SAMD_Slow_PWM v1.1.0
+[PWM] _period = 20 , frequency = 50000.00
+[PWM] SAMDTimerInterrupt: F_CPU (MHz) = 48 , TIMER_HZ = 48
+[PWM] TC3_Timer::startTimer _Timer = 0x 42002c00 , TC3 = 0x 42002c00
+[PWM] SAMD21 TC3 period = 20 , _prescaler = 1
+[PWM] _compareValue = 959
+Starting ITimer OK, micros() = 2921757
+Using PWM Freq = 1.00, PWM DutyCycle = 50
+Channel : 0	Period : 1000000		OnTime : 500000	Start_Time : 2922855
+Using PWM Freq = 2.00, PWM DutyCycle = 90
+Channel : 0	Period : 500000		OnTime : 450000	Start_Time : 12924175
+Using PWM Freq = 1.00, PWM DutyCycle = 50
+Channel : 0	Period : 1000000		OnTime : 500000	Start_Time : 22925508
+Using PWM Freq = 2.00, PWM DutyCycle = 90
+Channel : 0	Period : 500000		OnTime : 450000	Start_Time : 32926654
+```
+
+---
+
+### 6. ISR_Modify_PWM on ITSYBITSY_M4
+
+The following is the sample terminal output when running example [ISR_Modify_PWM](examples/SAMD51/ISR_Modify_PWM) on **ITSYBITSY_M4** to demonstrate how to modify PWM settings on-the-fly without deleting the PWM channel
+
+```
+Starting ISR_Modify_PWM on ITSYBITSY_M4
+SAMD_Slow_PWM v1.1.0
+[PWM] SAMDTimerInterrupt: F_CPU (MHz) = 120 , TIMER_HZ = 48
+[PWM] TC_Timer::startTimer _Timer = 0x 4101c000 , TC3 = 0x 4101c000
+[PWM] SAMD51 TC3 period = 20 , _prescaler = 1
+[PWM] _compareValue = 959
+Starting ITimer OK, micros() = 3821127
+Using PWM Freq = 1.00, PWM DutyCycle = 10
+Channel : 0	Period : 1000000		OnTime : 100000	Start_Time : 3821615
+Channel : 0	Period : 500000		OnTime : 450000	Start_Time : 13823005
+Channel : 0	Period : 1000000		OnTime : 100000	Start_Time : 23824004
+Channel : 0	Period : 500000		OnTime : 450000	Start_Time : 33825004
+Channel : 0	Period : 1000000		OnTime : 100000	Start_Time : 43826004
+Channel : 0	Period : 500000		OnTime : 450000	Start_Time : 53827004
+Channel : 0	Period : 1000000		OnTime : 100000	Start_Time : 63828004
+Channel : 0	Period : 500000		OnTime : 450000	Start_Time : 73829003
+Channel : 0	Period : 1000000		OnTime : 100000	Start_Time : 83830004
+```
+
+---
+
+### 7. ISR_Changing_PWM on ITSYBITSY_M4
+
+The following is the sample terminal output when running example [ISR_Changing_PWM](examples/SAMD51/ISR_Changing_PWM) on **ITSYBITSY_M4** to demonstrate how to modify PWM settings on-the-fly by deleting the PWM channel and reinit the PWM channel
+
+```
+Starting ISR_Changing_PWM on ITSYBITSY_M4
+SAMD_Slow_PWM v1.1.0
+[PWM] SAMDTimerInterrupt: F_CPU (MHz) = 120 , TIMER_HZ = 48
+[PWM] TC_Timer::startTimer _Timer = 0x 4101c000 , TC3 = 0x 4101c000
+[PWM] SAMD51 TC3 period = 20 , _prescaler = 1
+[PWM] _compareValue = 959
+Starting ITimer OK, micros() = 2721076
+Using PWM Freq = 1.00, PWM DutyCycle = 50
+Channel : 0	Period : 1000000		OnTime : 500000	Start_Time : 2721574
+Using PWM Freq = 2.00, PWM DutyCycle = 90
+Channel : 0	Period : 500000		OnTime : 450000	Start_Time : 12722174
+Using PWM Freq = 1.00, PWM DutyCycle = 50
+Channel : 0	Period : 1000000		OnTime : 500000	Start_Time : 22722759
+Using PWM Freq = 2.00, PWM DutyCycle = 90
+Channel : 0	Period : 500000		OnTime : 450000	Start_Time : 32723417
 ```
 
 ---
@@ -1110,6 +1218,7 @@ Submit issues to: [SAMD_Slow_PWM issues](https://github.com/khoih-prog/SAMD_Slow
 
 1. Basic hardware multi-channel PWM for **SAMD21/SAMD51 boards** such as NANO_33_IOT, ITSYBITSY_M4, SEEED_XIAO_M0, SparkFun_SAMD51_Thing_Plus, etc. using Arduino, Adafruit or Sparkfun core
 2. Add Table of Contents
+3. Add functions to modify PWM settings on-the-fly
 
 ---
 ---

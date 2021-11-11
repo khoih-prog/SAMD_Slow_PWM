@@ -11,12 +11,6 @@
   The accuracy is nearly perfect compared to software timers. The most important feature is they're ISR-based timers
   Therefore, their executions are not blocked by bad-behaving functions / tasks.
   This important feature is absolutely necessary for mission-critical tasks.
-
-  Version: 1.0.0
-
-  Version Modified By   Date      Comments
-  ------- -----------  ---------- -----------
-  1.0.0   K.Hoang      01/10/2021 Initial coding for SAMD21/SAMD51 boards
 *****************************************************************************************************************************/
 
 #if !( defined(ARDUINO_SAMD_ZERO) || defined(ARDUINO_SAMD_MKR1000) || defined(ARDUINO_SAMD_MKRWIFI1010) \
@@ -149,11 +143,10 @@ uint32_t PWM_Period[] =
   1000000L,   500000L,   66667L,    50000L,    40000L,   33333L,     25000L,    20000L
 };
 
-
 // You can assign any interval for any timer here, in Hz
-uint32_t PWM_Freq[] =
+double PWM_Freq[NUMBER_ISR_PWMS] =
 {
-  1,  2,  15, 20, 25, 30, 40, 50
+  1.0f,  2.0f,  15.0f,  20.0f,  25.0f,  30.0f,  40.0f,  50.0f,
 };
 
 // You can assign any interval for any timer here, in milliseconds
