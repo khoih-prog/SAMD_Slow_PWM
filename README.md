@@ -11,6 +11,7 @@
 
 ## Table of Contents
 
+* [Important Change from v1.2.0](#Important-Change-from-v120)
 * [Why do we need this SAMD_Slow_PWM library](#why-do-we-need-this-SAMD_Slow_PWM-library)
   * [Features](#features)
   * [Why using ISR-based PWM is better](#why-using-isr-based-pwm-is-better)
@@ -28,28 +29,31 @@
       * [For core version v1.8.9-](#for-core-version-v189-)
   * [2. For Adafruit SAMD boards](#2-for-adafruit-samd-boards)
   * [3. For Seeeduino SAMD boards](#3-for-seeeduino-samd-boards)
-  * [4. For SparkFun SAMD boards](#4-for-SparkFun-samd-boards) 
+  * [4. For SparkFun SAMD boards](#4-for-SparkFun-samd-boards)
+* [HOWTO Fix `Multiple Definitions` Linker Error](#howto-fix-multiple-definitions-linker-error) 
 * [Usage](#usage)
   * [1. Init Hardware Timer](#1-init-hardware-timer)
   * [2. Set PWM Frequency, dutycycle, attach irqCallbackStartFunc and irqCallbackStopFunc functions](#2-Set-PWM-Frequency-dutycycle-attach-irqCallbackStartFunc-and-irqCallbackStopFunc-functions)
 * [Examples](#examples)
   * [For SAMD21](#For-SAMD21)
-    * [ 1. ISR_16_PWMs_Array](examples/SAMD21/ISR_16_PWMs_Array)
-    * [ 2. ISR_16_PWMs_Array_Complex](examples/SAMD21/ISR_16_PWMs_Array_Complex)
-    * [ 3. ISR_16_PWMs_Array_Simple](examples/SAMD21/ISR_16_PWMs_Array_Simple)
+    * [ 1. ISR_4_PWMs_Array](examples/SAMD21/ISR_4_PWMs_Array)
+    * [ 2. ISR_4_PWMs_Array_Complex](examples/SAMD21/ISR_4_PWMs_Array_Complex)
+    * [ 3. ISR_4_PWMs_Array_Simple](examples/SAMD21/ISR_4_PWMs_Array_Simple)
     * [ 4. ISR_Changing_PWM](examples/SAMD21/ISR_Changing_PWM)
     * [ 5. ISR_Modify_PWM](examples/SAMD21/ISR_Modify_PWM)
+    * [ 6. multiFileProject](examples/SAMD21/multiFileProject) **New**
   * [For SAMD51](#For-SAMD51)
     * [ 1. ISR_16_PWMs_Array](examples/SAMD51/ISR_16_PWMs_Array)
     * [ 2. ISR_16_PWMs_Array_Complex](examples/SAMD51/ISR_16_PWMs_Array_Complex)
     * [ 3. ISR_16_PWMs_Array_Simple](examples/SAMD51/ISR_16_PWMs_Array_Simple)
     * [ 4. ISR_Changing_PWM](examples/SAMD51/ISR_Changing_PWM)
     * [ 5. ISR_Modify_PWM](examples/SAMD51/ISR_Modify_PWM)
+    * [ 6. multiFileProject](examples/SAMD51/multiFileProject) **New**
 * [Example SAMD51 ISR_16_PWMs_Array_Complex](#Example-SAMD51-ISR_16_PWMs_Array_Complex)
 * [Debug Terminal Output Samples](#debug-terminal-output-samples)
-  * [1. ISR_16_PWMs_Array_Complex on SAMD_NANO_33_IOT](#1-ISR_16_PWMs_Array_Complex-on-SAMD_NANO_33_IOT)
+  * [1. ISR_4_PWMs_Array_Complex on SAMD_NANO_33_IOT](#1-ISR_4_PWMs_Array_Complex-on-SAMD_NANO_33_IOT)
   * [2. ISR_16_PWMs_Array_Complex on ITSYBITSY_M4](#2-ISR_16_PWMs_Array_Complex-on-ITSYBITSY_M4)
-  * [3. ISR_16_PWMs_Array_Complex on SEEED_XIAO_M0](#3-ISR_16_PWMs_Array_Complex-on-SEEED_XIAO_M0)
+  * [3. ISR_4_PWMs_Array_Complex on SEEED_XIAO_M0](#3-ISR_4_PWMs_Array_Complex-on-SEEED_XIAO_M0)
   * [4. ISR_Modify_PWM on SAMD_NANO_33_IOT](#4-ISR_Modify_PWM-on-SAMD_NANO_33_IOT)
   * [5. ISR_Changing_PWM on SAMD_NANO_33_IOT](#5-ISR_Changing_PWM-on-SAMD_NANO_33_IOT)
   * [6. ISR_Modify_PWM on ITSYBITSY_M4](#6-ISR_Modify_PWM-on-ITSYBITSY_M4)
@@ -63,6 +67,32 @@
 * [Contributing](#contributing)
 * [License](#license)
 * [Copyright](#copyright)
+
+---
+---
+
+### Important Change from v1.2.0
+
+Please have a look at [HOWTO Fix `Multiple Definitions` Linker Error](#howto-fix-multiple-definitions-linker-error)
+
+As more complex calculation and check inside ISR are introduced from v1.2.0, there are consequences as follows
+
+- For SAMD21 (slower) => using min 50uS and max 4 PWM channels
+
+```
+// Use 50uS for slow SAMD21
+#define HW_TIMER_INTERVAL_US      50L
+```
+
+- For SAMD51 (faster) => using min 30uS and max 16 PWM channels
+
+```
+// Use 30uS for faster SAMD51
+#define HW_TIMER_INTERVAL_US      30L
+```
+
+You certainly can modify to use better values according to your board and use-case, just remember to test and reverse to conservative values if crash happens.
+
 
 ---
 ---
@@ -136,14 +166,16 @@ The catch is **your function is now part of an ISR (Interrupt Service Routine), 
 
 ## Prerequisites
 
- 1. [`Arduino IDE 1.8.16+` for Arduino](https://www.arduino.cc/en/Main/Software)
- 2. [`Arduino SAMD core 1.8.11+`](https://github.com/arduino/ArduinoCore-samd) for SAMD ARM Cortex-M0+ boards. [![GitHub release](https://img.shields.io/github/release/arduino/ArduinoCore-samd.svg)](https://github.com/arduino/ArduinoCore-samd/releases/latest)
- 3. [`Adafruit SAMD core 1.7.5+`](https://github.com/adafruit/ArduinoCore-samd) for SAMD ARM Cortex-M0+ and M4 boards (Nano 33 IoT, etc.). [![GitHub release](https://img.shields.io/github/release/adafruit/ArduinoCore-samd.svg)](https://github.com/adafruit/ArduinoCore-samd/releases/latest)
+ 1. [`Arduino IDE 1.8.19+` for Arduino](https://github.com/arduino/Arduino). [![GitHub release](https://img.shields.io/github/release/arduino/Arduino.svg)](https://github.com/arduino/Arduino/releases/latest)
+ 2. [`Arduino SAMD core 1.8.12+`](https://github.com/arduino/ArduinoCore-samd) for SAMD ARM Cortex-M0+ boards. [![GitHub release](https://img.shields.io/github/release/arduino/ArduinoCore-samd.svg)](https://github.com/arduino/ArduinoCore-samd/releases/latest)
+ 3. [`Adafruit SAMD core 1.7.8+`](https://github.com/adafruit/ArduinoCore-samd) for SAMD ARM Cortex-M0+ and M4 boards (Nano 33 IoT, etc.). [![GitHub release](https://img.shields.io/github/release/adafruit/ArduinoCore-samd.svg)](https://github.com/adafruit/ArduinoCore-samd/releases/latest)
  4. [`Seeeduino SAMD core 1.8.1+`](https://github.com/Seeed-Studio/ArduinoCore-samd) for SAMD21/SAMD51 boards (XIAO M0, Wio Terminal, etc.). [![Latest release](https://img.shields.io/github/release/Seeed-Studio/ArduinoCore-samd.svg)](https://github.com/Seeed-Studio/ArduinoCore-samd/releases/latest/)
  5. [`Sparkfun SAMD core 1.8.3+`](https://github.com/sparkfun/Arduino_Boards) for SAMD21/SAMD51 boards (SparkFun_RedBoard_Turbo, SparkFun_SAMD51_Thing_Plus, etc.).
 
  6. To use with certain example
-   - [`SimpleTimer library`](https://github.com/jfturcot/SimpleTimer) for [ISR_16_Timers_Array example](examples/ISR_16_Timers_Array).
+   - [`SimpleTimer library`](https://github.com/jfturcot/SimpleTimer) to use with some examples.
+   
+   
 ---
 ---
 
@@ -177,13 +209,13 @@ Another way to install is to:
 
 #### 1. For Arduino SAMD boards
  
- ***To be able to compile without error and automatically detect and display BOARD_NAME on Arduino SAMD (Nano-33-IoT, etc) boards***, you have to copy the whole [Arduino SAMD Packages_Patches](Packages_Patches/arduino/hardware/samd/1.8.11) directory into Arduino SAMD directory (~/.arduino15/packages/arduino/hardware/samd/1.8.11).
+ ***To be able to compile without error and automatically detect and display BOARD_NAME on Arduino SAMD (Nano-33-IoT, etc) boards***, you have to copy the whole [Arduino SAMD Packages_Patches](Packages_Patches/arduino/hardware/samd/1.8.12) directory into Arduino SAMD directory (~/.arduino15/packages/arduino/hardware/samd/1.8.12).
  
 #### For core version v1.8.10+
 
-Supposing the Arduino SAMD version is 1.8.11. Now only one file must be copied into the directory:
+Supposing the Arduino SAMD version is 1.8.12. Now only one file must be copied into the directory:
 
-- `~/.arduino15/packages/arduino/hardware/samd/1.8.11/platform.txt`
+- `~/.arduino15/packages/arduino/hardware/samd/1.8.12/platform.txt`
 
 Whenever a new version is installed, remember to copy this files into the new version directory. For example, new version is x.yy.zz
 
@@ -216,13 +248,13 @@ Whenever the above-mentioned compiler error issue is fixed with the new Arduino 
 
 #### 2. For Adafruit SAMD boards
  
- ***To be able to compile without error and automatically detect and display BOARD_NAME on Adafruit SAMD (Itsy-Bitsy M4, etc) boards***, you have to copy the files in [Adafruit SAMD Packages_Patches](Packages_Patches/adafruit/hardware/samd/1.7.5) into Adafruit samd directory (~/.arduino15/packages/adafruit/hardware/samd/1.7.5). 
+ ***To be able to compile without error and automatically detect and display BOARD_NAME on Adafruit SAMD (Itsy-Bitsy M4, etc) boards***, you have to copy the files in [Adafruit SAMD Packages_Patches](Packages_Patches/adafruit/hardware/samd/1.7.8) into Adafruit samd directory (~/.arduino15/packages/adafruit/hardware/samd/1.7.8). 
 
-Supposing the Adafruit SAMD core version is 1.7.5. This file must be copied into the directory:
+Supposing the Adafruit SAMD core version is 1.7.8. This file must be copied into the directory:
 
-- `~/.arduino15/packages/adafruit/hardware/samd/1.7.5/platform.txt`
-- `~/.arduino15/packages/adafruit/hardware/samd/1.7.5/cores/arduino/Print.h`
-- `~/.arduino15/packages/adafruit/hardware/samd/1.7.5/cores/arduino/Print.cpp`
+- `~/.arduino15/packages/adafruit/hardware/samd/1.7.8/platform.txt`
+- `~/.arduino15/packages/adafruit/hardware/samd/1.7.8/cores/arduino/Print.h`
+- `~/.arduino15/packages/adafruit/hardware/samd/1.7.8/cores/arduino/Print.cpp`
 
 Whenever a new version is installed, remember to copy this file into the new version directory. For example, new version is x.yy.zz
 This file must be copied into the directory:
@@ -268,6 +300,32 @@ This file must be copied into the directory:
 - `~/.arduino15/packages/SparkFun/hardware/samd/x.yy.zz/cores/arduino/Print.cpp`
 - `~/.arduino15/packages/SparkFun/hardware/samd/x.yy.zz/cores/arduino51/Print.h`
 - `~/.arduino15/packages/SparkFun/hardware/samd/x.yy.zz/cores/arduino51/Print.cpp`
+
+---
+---
+
+### HOWTO Fix `Multiple Definitions` Linker Error
+
+The current library implementation, using `xyz-Impl.h` instead of standard `xyz.cpp`, possibly creates certain `Multiple Definitions` Linker error in certain use cases.
+
+You can include this `.hpp` file
+
+```
+// Can be included as many times as necessary, without `Multiple Definitions` Linker Error
+#include "SAMD_Slow_PWM.hpp"     //https://github.com/khoih-prog/SAMD_Slow_PWM
+```
+
+in many files. But be sure to use the following `.h` file **in just 1 `.h`, `.cpp` or `.ino` file**, which must **not be included in any other file**, to avoid `Multiple Definitions` Linker Error
+
+```
+// To be included only in main(), .ino with setup() to avoid `Multiple Definitions` Linker Error
+#include "SAMD_Slow_PWM.h"           //https://github.com/khoih-prog/SAMD_Slow_PWM
+```
+
+Check the new [**multiFileProject** example](examples/multiFileProject) for a `HOWTO` demo.
+
+Have a look at the discussion in [Different behaviour using the src_cpp or src_h lib #80](https://github.com/khoih-prog/ESPAsync_WiFiManager/discussions/80)
+
 
 ---
 ---
@@ -324,11 +382,12 @@ void setup()
 
 #### For SAMD21
 
- 1. [ISR_16_PWMs_Array](examples/SAMD21/ISR_16_PWMs_Array)
- 2. [ISR_16_PWMs_Array_Complex](examples/SAMD21/ISR_16_PWMs_Array_Complex)
- 3. [ISR_16_PWMs_Array_Simple](examples/SAMD21/ISR_16_PWMs_Array_Simple)
+ 1. [ISR_4_PWMs_Array](examples/SAMD21/ISR_4_PWMs_Array)
+ 2. [ISR_4_PWMs_Array_Complex](examples/SAMD21/ISR_4_PWMs_Array_Complex)
+ 3. [ISR_4_PWMs_Array_Simple](examples/SAMD21/ISR_4_PWMs_Array_Simple)
  4. [ISR_Changing_PWM](examples/SAMD21/ISR_Changing_PWM)
  5. [ISR_Modify_PWM](examples/SAMD21/ISR_Modify_PWM)
+ 6. [multiFileProject](examples/SAMD21/multiFileProject). **New**
  
 #### For SAMD51
 
@@ -336,7 +395,8 @@ void setup()
  2. [ISR_16_PWMs_Array_Complex](examples/SAMD51/ISR_16_PWMs_Array_Complex)
  3. [ISR_16_PWMs_Array_Simple](examples/SAMD51/ISR_16_PWMs_Array_Simple)
  4. [ISR_Changing_PWM](examples/SAMD51/ISR_Changing_PWM)
- 5. [ISR_Modify_PWM](examples/SAMD51/ISR_Modify_PWM) 
+ 5. [ISR_Modify_PWM](examples/SAMD51/ISR_Modify_PWM)
+ 6. [multiFileProject](examples/SAMD51/multiFileProject). **New**
 
  
 ---
@@ -355,9 +415,13 @@ void setup()
 #define _PWM_LOGLEVEL_      4
 
 #define USING_MICROS_RESOLUTION       true    //false
+
+// Default is true, uncomment to false
+//#define CHANGING_PWM_END_OF_CYCLE     false
   
 #define MAX_SAMD_PWM_FREQ            1000
 
+// To be included only in main(), .ino with setup() to avoid `Multiple Definitions` Linker Error
 #include "SAMD_Slow_PWM.h"
 
 #define boolean     bool
@@ -379,7 +443,7 @@ void setup()
   #define LED_RED           3
 #endif
 
-#define HW_TIMER_INTERVAL_US      20L
+#define HW_TIMER_INTERVAL_US      30L
 
 uint64_t startMicros = 0;
 
@@ -435,12 +499,12 @@ typedef struct
   irqCallback   irqCallbackStopFunc;
 
 #if USING_PWM_FREQUENCY  
-  uint32_t      PWM_Freq;
+  double        PWM_Freq;
 #else  
-  uint32_t      PWM_Period;
+  double        PWM_Period;
 #endif
   
-  uint32_t      PWM_DutyCycle;
+  double        PWM_DutyCycle;
   
   uint64_t      deltaMicrosStart;
   uint64_t      previousMicrosStart;
@@ -474,24 +538,24 @@ uint32_t PWM_Pin[] =
 };
 
 // You can assign any interval for any timer here, in microseconds
-uint32_t PWM_Period[] =
+double PWM_Period[] =
 {
-  1000000L,   500000L,   333333L,   250000L,   200000L,   166667L,   142857L,   125000L,
-   111111L,   100000L,    66667L,    50000L,    40000L,   33333L,     25000L,    20000L
+  1000000.0,     500000.0,   333333.333,   250000.0,   200000.0,   166666.666,   142857.143,   125000.0,
+   111111.111,   100000.0,    66666.666,    50000.0,    40000.0,    33333.333,    25000.0,      20000.0
 };
 
 // You can assign any interval for any timer here, in Hz
-double PWM_Freq[NUMBER_ISR_PWMS] =
+double PWM_Freq[] =
 {
   1.0f,  2.0f,  3.0f,  4.0f,  5.0f,  6.0f,  7.0f,  8.0f,
   9.0f, 10.0f, 15.0f, 20.0f, 25.0f, 30.0f, 40.0f, 50.0f
 };
 
 // You can assign any interval for any timer here, in milliseconds
-uint32_t PWM_DutyCycle[] =
+double PWM_DutyCycle[] =
 {
-   5, 10, 20, 30, 40, 45, 50, 55,
-  60, 65, 70, 75, 80, 85, 90, 95
+   5.00, 10.00, 20.00, 30.00, 40.00, 45.00, 50.00, 55.00,
+  60.00, 65.00, 70.00, 75.00, 80.00, 85.00, 90.00, 95.00
 };
 
 void doingSomethingStart(int index)
@@ -688,22 +752,22 @@ void doingSomethingStop15()
   ISR_PWM_Data curISR_PWM_Data[] =
   {
     // pin, irqCallbackStartFunc, irqCallbackStopFunc, PWM_Freq, PWM_DutyCycle, deltaMicrosStart, previousMicrosStart, deltaMicrosStop, previousMicrosStop
-    { LED_BUILTIN,  doingSomethingStart0,    doingSomethingStop0,    1,   5, 0, 0, 0, 0 },
-    { LED_BLUE,     doingSomethingStart1,    doingSomethingStop1,    2,  10, 0, 0, 0, 0 },
-    { LED_RED,      doingSomethingStart2,    doingSomethingStop2,    3,  20, 0, 0, 0, 0 },
-    { PIN_D0,       doingSomethingStart3,    doingSomethingStop3,    4,  30, 0, 0, 0, 0 },
-    { PIN_D1,       doingSomethingStart4,    doingSomethingStop4,    5,  40, 0, 0, 0, 0 },
-    { PIN_D2,       doingSomethingStart5,    doingSomethingStop5,    6,  45, 0, 0, 0, 0 },
-    { PIN_D3,       doingSomethingStart6,    doingSomethingStop6,    7,  50, 0, 0, 0, 0 },
-    { PIN_D4,       doingSomethingStart7,    doingSomethingStop7,    8,  55, 0, 0, 0, 0 },
-    { PIN_D5,       doingSomethingStart8,    doingSomethingStop8,    9,  60, 0, 0, 0, 0 },
-    { PIN_D6,       doingSomethingStart9,    doingSomethingStop9,   10,  65, 0, 0, 0, 0 },
-    { PIN_D7,       doingSomethingStart10,   doingSomethingStop10,  15,  70, 0, 0, 0, 0 },
-    { PIN_D8,       doingSomethingStart11,   doingSomethingStop11,  20,  75, 0, 0, 0, 0 },
-    { PIN_D9,       doingSomethingStart12,   doingSomethingStop12,  25,  80, 0, 0, 0, 0 },
-    { PIN_D10,      doingSomethingStart13,   doingSomethingStop13,  30,  85, 0, 0, 0, 0 },
-    { PIN_D11,      doingSomethingStart14,   doingSomethingStop14,  40,  90, 0, 0, 0, 0 },
-    { PIN_D12,      doingSomethingStart15,   doingSomethingStop15,  50,  95, 0, 0, 0, 0 }
+    { LED_BUILTIN,  doingSomethingStart0,    doingSomethingStop0,    1.0,   5.0, 0, 0, 0, 0 },
+    { LED_BLUE,     doingSomethingStart1,    doingSomethingStop1,    2.0,  10.0, 0, 0, 0, 0 },
+    { LED_RED,      doingSomethingStart2,    doingSomethingStop2,    3.0,  20.0, 0, 0, 0, 0 },
+    { PIN_D0,       doingSomethingStart3,    doingSomethingStop3,    4.0,  30.0, 0, 0, 0, 0 },
+    { PIN_D1,       doingSomethingStart4,    doingSomethingStop4,    5.0,  40.0, 0, 0, 0, 0 },
+    { PIN_D2,       doingSomethingStart5,    doingSomethingStop5,    6.0,  45.0, 0, 0, 0, 0 },
+    { PIN_D3,       doingSomethingStart6,    doingSomethingStop6,    7.0,  50.0, 0, 0, 0, 0 },
+    { PIN_D4,       doingSomethingStart7,    doingSomethingStop7,    8.0,  55.0, 0, 0, 0, 0 },
+    { PIN_D5,       doingSomethingStart8,    doingSomethingStop8,    9.0,  60.0, 0, 0, 0, 0 },
+    { PIN_D6,       doingSomethingStart9,    doingSomethingStop9,   10.0,  65.0, 0, 0, 0, 0 },
+    { PIN_D7,       doingSomethingStart10,   doingSomethingStop10,  15.0,  70.0, 0, 0, 0, 0 },
+    { PIN_D8,       doingSomethingStart11,   doingSomethingStop11,  20.0,  75.0, 0, 0, 0, 0 },
+    { PIN_D9,       doingSomethingStart12,   doingSomethingStop12,  25.0,  80.0, 0, 0, 0, 0 },
+    { PIN_D10,      doingSomethingStart13,   doingSomethingStop13,  30.0,  85.0, 0, 0, 0, 0 },
+    { PIN_D11,      doingSomethingStart14,   doingSomethingStop14,  40.0,  90.0, 0, 0, 0, 0 },
+    { PIN_D12,      doingSomethingStart15,   doingSomethingStop15,  50.0,  95.0, 0, 0, 0, 0 }
   };
   
   #else   // #if USING_PWM_FREQUENCY
@@ -711,22 +775,22 @@ void doingSomethingStop15()
   ISR_PWM_Data curISR_PWM_Data[] =
   {
     // pin, irqCallbackStartFunc, irqCallbackStopFunc, PWM_Period, PWM_DutyCycle, deltaMicrosStart, previousMicrosStart, deltaMicrosStop, previousMicrosStop
-    { LED_BUILTIN,  doingSomethingStart0,     doingSomethingStop0,   1000000L,  5, 0, 0, 0, 0 },
-    { LED_BLUE,     doingSomethingStart1,     doingSomethingStop1,    500000L, 10, 0, 0, 0, 0 },
-    { LED_RED,      doingSomethingStart2,     doingSomethingStop2,    333333L, 20, 0, 0, 0, 0 },
-    { PIN_D0,       doingSomethingStart3,     doingSomethingStop3,    250000L, 30, 0, 0, 0, 0 },
-    { PIN_D1,       doingSomethingStart4,     doingSomethingStop4,    200000L, 40, 0, 0, 0, 0 },
-    { PIN_D2,       doingSomethingStart5,     doingSomethingStop5,    166667L, 45, 0, 0, 0, 0 },
-    { PIN_D3,       doingSomethingStart6,     doingSomethingStop6,    142857L, 50, 0, 0, 0, 0 },
-    { PIN_D4,       doingSomethingStart7,     doingSomethingStop7,    125000L, 55, 0, 0, 0, 0 },
-    { PIN_D5,       doingSomethingStart8,     doingSomethingStop8,    111111L, 60, 0, 0, 0, 0 },
-    { PIN_D6,       doingSomethingStart9,     doingSomethingStop9,    100000L, 65, 0, 0, 0, 0 },
-    { PIN_D7,       doingSomethingStart10,    doingSomethingStop10,    66667L, 70, 0, 0, 0, 0 },
-    { PIN_D8,       doingSomethingStart11,    doingSomethingStop11,    50000L, 75, 0, 0, 0, 0 },
-    { PIN_D9,       doingSomethingStart12,    doingSomethingStop12,    40000L, 80, 0, 0, 0, 0 },
-    { PIN_D10,      doingSomethingStart13,    doingSomethingStop13,    33333L, 85, 0, 0, 0, 0 },
-    { PIN_D11,      doingSomethingStart14,    doingSomethingStop14,    25000L, 90, 0, 0, 0, 0 },
-    { PIN_D12,      doingSomethingStart15,    doingSomethingStop15,    20000L, 95, 0, 0, 0, 0 }
+    { LED_BUILTIN,  doingSomethingStart0,     doingSomethingStop0,   1000000.0,    5.0, 0, 0, 0, 0 },
+    { LED_BLUE,     doingSomethingStart1,     doingSomethingStop1,    500000.0,   10.0, 0, 0, 0, 0 },
+    { LED_RED,      doingSomethingStart2,     doingSomethingStop2,    333333.333, 20.0, 0, 0, 0, 0 },
+    { PIN_D0,       doingSomethingStart3,     doingSomethingStop3,    250000.0,   30.0, 0, 0, 0, 0 },
+    { PIN_D1,       doingSomethingStart4,     doingSomethingStop4,    200000.0,   40.0, 0, 0, 0, 0 },
+    { PIN_D2,       doingSomethingStart5,     doingSomethingStop5,    166667.667, 45.0, 0, 0, 0, 0 },
+    { PIN_D3,       doingSomethingStart6,     doingSomethingStop6,    142857.143, 50.0, 0, 0, 0, 0 },
+    { PIN_D4,       doingSomethingStart7,     doingSomethingStop7,    125000.0,   55.0, 0, 0, 0, 0 },
+    { PIN_D5,       doingSomethingStart8,     doingSomethingStop8,    111111.111, 60.0, 0, 0, 0, 0 },
+    { PIN_D6,       doingSomethingStart9,     doingSomethingStop9,    100000.0,   65.0, 0, 0, 0, 0 },
+    { PIN_D7,       doingSomethingStart10,    doingSomethingStop10,    66666.667, 70.0, 0, 0, 0, 0 },
+    { PIN_D8,       doingSomethingStart11,    doingSomethingStop11,    50000.0,   75.0, 0, 0, 0, 0 },
+    { PIN_D9,       doingSomethingStart12,    doingSomethingStop12,    40000.0,   80.0, 0, 0, 0, 0 },
+    { PIN_D10,      doingSomethingStart13,    doingSomethingStop13,    33333.333, 85.0, 0, 0, 0, 0 },
+    { PIN_D11,      doingSomethingStart14,    doingSomethingStop14,    25000.0,   90.0, 0, 0, 0, 0 },
+    { PIN_D12,      doingSomethingStart15,    doingSomethingStop15,    20000.0,   95.0, 0, 0, 0, 0 }
   };
   
   #endif  // #if USING_PWM_FREQUENCY
@@ -751,7 +815,7 @@ void doingSomethingStop(int index)
 
 #else   // #if USE_COMPLEX_STRUCT
 
-irqCallback irqCallbackStartFunc[NUMBER_ISR_PWMS] =
+irqCallback irqCallbackStartFunc[] =
 {
   doingSomethingStart0,  doingSomethingStart1,  doingSomethingStart2,  doingSomethingStart3,
   doingSomethingStart4,  doingSomethingStart5,  doingSomethingStart6,  doingSomethingStart7,
@@ -759,7 +823,7 @@ irqCallback irqCallbackStartFunc[NUMBER_ISR_PWMS] =
   doingSomethingStart12, doingSomethingStart13, doingSomethingStart14, doingSomethingStart15
 };
 
-irqCallback irqCallbackStopFunc[NUMBER_ISR_PWMS] =
+irqCallback irqCallbackStopFunc[] =
 {
   doingSomethingStop0,  doingSomethingStop1,  doingSomethingStop2,  doingSomethingStop3,
   doingSomethingStop4,  doingSomethingStop5,  doingSomethingStop6,  doingSomethingStop7,
@@ -915,55 +979,34 @@ void loop()
 
 ### Debug Terminal Output Samples
 
-### 1. ISR_16_PWMs_Array_Complex on SAMD_NANO_33_IOT
+### 1. ISR_4_PWMs_Array_Complex on SAMD_NANO_33_IOT
 
-The following is the sample terminal output when running example [ISR_16_PWMs_Array_Complex](examples/SAMD21/ISR_16_PWMs_Array_Complex) on SAMD_NANO_33_IOT to demonstrate how to use multiple PWM channels with complex callback functions, the accuracy of ISR Hardware PWM-channels, **especially when system is very busy**.  The ISR PWM-channels is **running exactly according to corresponding programmed periods and duty-cycles**
+The following is the sample terminal output when running example [ISR_16_PWMs_Array_Complex](examples/SAMD21/ISR_4_PWMs_Array_Complex) on SAMD_NANO_33_IOT to demonstrate how to use multiple PWM channels with complex callback functions, the accuracy of ISR Hardware PWM-channels, **especially when system is very busy**.  The ISR PWM-channels is **running exactly according to corresponding programmed periods and duty-cycles**
 
 
 ```
-Starting ISR_16_PWMs_Array_Complex on SAMD_NANO_33_IOT
-SAMD_Slow_PWM v1.1.0
-[PWM] _period = 20 , frequency = 50000.00
-[PWM] SAMDTimerInterrupt: F_CPU (MHz) = 48 , TIMER_HZ = 48
-[PWM] TC3_Timer::startTimer _Timer = 0x 42002c00 , TC3 = 0x 42002c00
-[PWM] SAMD21 TC3 period = 20 , _prescaler = 1
-[PWM] _compareValue = 959
-Starting ITimer OK, micros() = 3682076
-Channel : 0	Period : 1000000		OnTime : 50000	Start_Time : 3682450
-Channel : 1	Period : 500000		OnTime : 50000	Start_Time : 3682450
-Channel : 2	Period : 66666		OnTime : 13333	Start_Time : 3682450
-Channel : 3	Period : 50000		OnTime : 15000	Start_Time : 3682450
-Channel : 4	Period : 40000		OnTime : 16000	Start_Time : 3682450
-Channel : 5	Period : 33333		OnTime : 16666	Start_Time : 3682450
-Channel : 6	Period : 25000		OnTime : 15000	Start_Time : 3682450
-Channel : 7	Period : 20000		OnTime : 14000	Start_Time : 3682450
-SimpleTimer (ms): 2000, us : 13688073, Dus : 
-PWM Channel : 0, programmed Period (us): 1000000, actual : 1000000, programmed DutyCycle : 5, actual : 5.00
-PWM Channel : 1, programmed Period (us): 500000, actual : 500005, programmed DutyCycle : 10, actual : 10.00
-PWM Channel : 2, programmed Period (us): 66666, actual : 66680, programmed DutyCycle : 20, actual : 19.98
-PWM Channel : 3, programmed Period (us): 50000, actual : 50000, programmed DutyCycle : 30, actual : 30.00
-PWM Channel : 4, programmed Period (us): 40000, actual : 40000, programmed DutyCycle : 40, actual : 40.00
-PWM Channel : 5, programmed Period (us): 33333, actual : 33339, programmed DutyCycle : 50, actual : 49.97
-PWM Channel : 6, programmed Period (us): 25000, actual : 24994, programmed DutyCycle : 60, actual : 60.01
-PWM Channel : 7, programmed Period (us): 20000, actual : 20000, programmed DutyCycle : 70, actual : 69.98
-SimpleTimer (ms): 2000, us : 23860692, Dus : 10172619
-PWM Channel : 0, programmed Period (us): 1000000, actual : 1000000, programmed DutyCycle : 5, actual : 5.00
-PWM Channel : 1, programmed Period (us): 500000, actual : 500000, programmed DutyCycle : 10, actual : 10.00
-PWM Channel : 2, programmed Period (us): 66666, actual : 66680, programmed DutyCycle : 20, actual : 19.98
-PWM Channel : 3, programmed Period (us): 50000, actual : 50000, programmed DutyCycle : 30, actual : 30.00
-PWM Channel : 4, programmed Period (us): 40000, actual : 40000, programmed DutyCycle : 40, actual : 40.00
-PWM Channel : 5, programmed Period (us): 33333, actual : 33339, programmed DutyCycle : 50, actual : 49.97
-PWM Channel : 6, programmed Period (us): 25000, actual : 24994, programmed DutyCycle : 60, actual : 60.02
-PWM Channel : 7, programmed Period (us): 20000, actual : 20000, programmed DutyCycle : 70, actual : 70.00
-SimpleTimer (ms): 2000, us : 33875293, Dus : 10014601
-PWM Channel : 0, programmed Period (us): 1000000, actual : 1000020, programmed DutyCycle : 5, actual : 5.00
-PWM Channel : 1, programmed Period (us): 500000, actual : 500005, programmed DutyCycle : 10, actual : 10.00
-PWM Channel : 2, programmed Period (us): 66666, actual : 66680, programmed DutyCycle : 20, actual : 19.98
-PWM Channel : 3, programmed Period (us): 50000, actual : 50000, programmed DutyCycle : 30, actual : 29.97
-PWM Channel : 4, programmed Period (us): 40000, actual : 40000, programmed DutyCycle : 40, actual : 40.00
-PWM Channel : 5, programmed Period (us): 33333, actual : 33341, programmed DutyCycle : 50, actual : 49.97
-PWM Channel : 6, programmed Period (us): 25000, actual : 25000, programmed DutyCycle : 60, actual : 60.00
-PWM Channel : 7, programmed Period (us): 20000, actual : 20006, programmed DutyCycle : 70, actual : 69.98
+Starting ISR_4_PWMs_Array_Complex on SAMD_NANO_33_IOT
+SAMD_Slow_PWM v1.2.0
+Starting ITimer OK, micros() = 3270609
+Channel : 0	    Period : 1000000.00		OnTime : 50000	Start_Time : 3271142
+Channel : 1	    Period : 500000.00		OnTime : 50000	Start_Time : 3271844
+Channel : 2	    Period : 66666.67		OnTime : 13333	Start_Time : 3272575
+Channel : 3	    Period : 50000.00150003273297
+SimpleTimer (ms): 2000, us : 13410858, Dus : 10140008
+PWM Channel : 0, programmed Period (us): 1000000.00, actual : 1000000, programmed DutyCycle : 5.00, actual : 5.00
+PWM Channel : 1, programmed Period (us): 500000.00, actual : 499996, programmed DutyCycle : 10.00, actual : 10.00
+PWM Channel : 2, programmed Period (us): 66666.67, actual : 66700, programmed DutyCycle : 20.00, actual : 19.95
+PWM Channel : 3, programmed Period (us): 50000.00, actual : 50000, programmed DutyCycle : 30.00, actual : 30.01
+SimpleTimer (ms): 2000, us : 23416601, Dus : 10005743
+PWM Channel : 0, programmed Period (us): 1000000.0, actual : 1000000, programmed DutyCycle : 5.005.00
+PWM Channel : 1, programmed Period (us): 500000.00, actual : 499996, programmed DutyCycle : 10.00, actual : 10.00
+PWM Channel : 2, programmed Period (us): 66666.67, actual : 66700, programmed DutyCycle : 20.00, actual : 19.95
+PWM Channel : 3, programmed Period (us): 50000.00, actual : 4995, programmed DutyCycle : 30.00, actual : 30.01
+SimpleTimer (ms): 2000, us : 3369325010276649
+PWM Channel : 0, programmed Period (us): 1000000.001000000, programmed DutyCycle : 500, actual : 5.00
+PWM Channel : 1, programmed Period (us): 500000.00, actual : 00004, programmed DutyCycle : 10.00, actual : 10.00
+PWM Channel : 2, programmed Period (us): 66666.67, actual : 66700, programmed DutyCycle : 20.00, actual : 19.95
+PWM Channel : 3, programmed Period (us): 50000.00, actual : 50005, programmed DutyCycle : 30.00, actual : 30.00
 ```
 
 ---
@@ -975,107 +1018,86 @@ The following is the sample terminal output when running example [ISR_16_PWMs_Ar
 
 ```
 Starting ISR_16_PWMs_Array_Complex on ITSYBITSY_M4
-SAMD_Slow_PWM v1.1.0
-[PWM] SAMDTimerInterrupt: F_CPU (MHz) = 120 , TIMER_HZ = 48
-[PWM] TC_Timer::startTimer _Timer = 0x 4101c000 , TC3 = 0x 4101c000
-[PWM] SAMD51 TC3 period = 20 , _prescaler = 1
-[PWM] _compareValue = 959
-Starting ITimer OK, micros() = 11651743
-Channel : 0	Period : 1000000		OnTime : 50000	Start_Time : 11652065
-Channel : 1	Period : 500000		OnTime : 50000	Start_Time : 11652065
-Channel : 2	Period : 333333		OnTime : 66666	Start_Time : 11652065
-Channel : 3	Period : 250000		OnTime : 75000	Start_Time : 11652065
-Channel : 4	Period : 200000		OnTime : 80000	Start_Time : 11652065
-Channel : 5	Period : 166666		OnTime : 74999	Start_Time : 11652065
-Channel : 6	Period : 142857		OnTime : 71428	Start_Time : 11652065
-Channel : 7	Period : 125000		OnTime : 68750	Start_Time : 11652065
-Channel : 8	Period : 111111		OnTime : 66666	Start_Time : 11652065
-Channel : 9	Period : 100000		OnTime : 65000	Start_Time : 11652065
-Channel : 10	Period : 66666		OnTime : 46666	Start_Time : 11652065
-Channel : 11	Period : 50000		OnTime : 37500	Start_Time : 11652065
-Channel : 12	Period : 40000		OnTime : 32000	Start_Time : 11652065
-Channel : 13	Period : 33333		OnTime : 28333	Start_Time : 11652065
-Channel : 14	Period : 25000		OnTime : 22500	Start_Time : 11652065
-Channel : 15	Period : 20000		OnTime : 19000	Start_Time : 11652065
-SimpleTimer (ms): 2000, us : 21658772, Dus : 10006709
-PWM Channel : 0, programmed Period (us): 1000000, actual : 1000000, programmed DutyCycle : 5, actual : 5.00
-PWM Channel : 1, programmed Period (us): 500000, actual : 500001, programmed DutyCycle : 10, actual : 10.00
-PWM Channel : 2, programmed Period (us): 333333, actual : 333339, programmed DutyCycle : 20, actual : 20.00
-PWM Channel : 3, programmed Period (us): 250000, actual : 250002, programmed DutyCycle : 30, actual : 30.00
-PWM Channel : 4, programmed Period (us): 200000, actual : 200003, programmed DutyCycle : 40, actual : 40.00
-PWM Channel : 5, programmed Period (us): 166666, actual : 166680, programmed DutyCycle : 45, actual : 44.98
-PWM Channel : 6, programmed Period (us): 142857, actual : 142860, programmed DutyCycle : 50, actual : 49.99
-PWM Channel : 7, programmed Period (us): 125000, actual : 125004, programmed DutyCycle : 55, actual : 54.99
-PWM Channel : 8, programmed Period (us): 111111, actual : 111121, programmed DutyCycle : 60, actual : 59.99
-PWM Channel : 9, programmed Period (us): 100000, actual : 100006, programmed DutyCycle : 65, actual : 65.00
-PWM Channel : 10, programmed Period (us): 66666, actual : 66680, programmed DutyCycle : 70, actual : 69.98
-PWM Channel : 11, programmed Period (us): 50000, actual : 50007, programmed DutyCycle : 75, actual : 74.99
-PWM Channel : 12, programmed Period (us): 40000, actual : 40008, programmed DutyCycle : 80, actual : 79.98
-PWM Channel : 13, programmed Period (us): 33333, actual : 33341, programmed DutyCycle : 85, actual : 84.94
-PWM Channel : 14, programmed Period (us): 25000, actual : 25009, programmed DutyCycle : 90, actual : 89.97
-PWM Channel : 15, programmed Period (us): 20000, actual : 20010, programmed DutyCycle : 95, actual : 94.95
-SimpleTimer (ms): 2000, us : 31667455, Dus : 10008683
-PWM Channel : 0, programmed Period (us): 1000000, actual : 1000000, programmed DutyCycle : 5, actual : 5.00
-PWM Channel : 1, programmed Period (us): 500000, actual : 500001, programmed DutyCycle : 10, actual : 10.00
-PWM Channel : 2, programmed Period (us): 333333, actual : 333339, programmed DutyCycle : 20, actual : 20.00
-PWM Channel : 3, programmed Period (us): 250000, actual : 250002, programmed DutyCycle : 30, actual : 30.00
-PWM Channel : 4, programmed Period (us): 200000, actual : 200003, programmed DutyCycle : 40, actual : 40.00
-PWM Channel : 5, programmed Period (us): 166666, actual : 166680, programmed DutyCycle : 45, actual : 44.98
-PWM Channel : 6, programmed Period (us): 142857, actual : 142860, programmed DutyCycle : 50, actual : 49.99
-PWM Channel : 7, programmed Period (us): 125000, actual : 125004, programmed DutyCycle : 55, actual : 54.99
-PWM Channel : 8, programmed Period (us): 111111, actual : 111121, programmed DutyCycle : 60, actual : 59.99
-PWM Channel : 9, programmed Period (us): 100000, actual : 100006, programmed DutyCycle : 65, actual : 65.00
-PWM Channel : 10, programmed Period (us): 66666, actual : 66680, programmed DutyCycle : 70, actual : 69.98
-PWM Channel : 11, programmed Period (us): 50000, actual : 50006, programmed DutyCycle : 75, actual : 74.99
-PWM Channel : 12, programmed Period (us): 40000, actual : 40008, programmed DutyCycle : 80, actual : 79.98
-PWM Channel : 13, programmed Period (us): 33333, actual : 33341, programmed DutyCycle : 85, actual : 84.94
-PWM Channel : 14, programmed Period (us): 25000, actual : 25009, programmed DutyCycle : 90, actual : 89.93
-PWM Channel : 15, programmed Period (us): 20000, actual : 19989, programmed DutyCycle : 95, actual : 95.00
+SAMD_Slow_PWM v1.2.0
+Starting ITimer OK, micros() = 3620278
+Channel : 0	    Period : 1000000.00		OnTime : 50000	Start_Time : 3620624
+Channel : 1	    Period : 500000.00		OnTime : 50000	Start_Time : 3621053
+Channel : 2	    Period : 333333.33		OnTime : 66666	Start_Time : 3621566
+Channel : 3	    Period : 250000.00		OnTime : 75000	Start_Time : 3622005
+Channel : 4	    Period : 200000.00		OnTime : 80000	Start_Time : 3622505
+Channel : 5	    Period : 166666.67		OnTime : 75000	Start_Time : 3622956
+Channel : 6	    Period : 142857.14		OnTime : 71428	Start_Time : 3623456
+Channel : 7	    Period : 125000.00		OnTime : 68750	Start_Time : 3623902
+Channel : 8	    Period : 111111.11		OnTime : 66666	Start_Time : 3624410
+Channel : 9	    Period : 100000.00		OnTime : 65000	Start_Time : 3624849
+Channel : 10	    Period : 66666.67		OnTime : 46666	Start_Time : 3625311
+Channel : 11	    Period : 50000.00		OnTime : 37500	Start_Time : 3625804
+Channel : 12	    Period : 40000.00		OnTime : 32000	Start_Time : 3626250
+Channel : 13	    Period : 33333.33		OnTime : 28333	Start_Time : 3626757
+Channel : 14	    Period : 25000.00		OnTime : 22500	Start_Time : 3627197
+Channel : 15	    Period : 20000.00		OnTime : 19000	Start_Time : 3627697
+SimpleTimer (ms): 2000, us : 13628127, Dus : 10007583
+PWM Channel : 0, programmed Period (us): 1000000.00, actual : 999999, programmed DutyCycle : 5.00, actual : 5.00
+PWM Channel : 1, programmed Period (us): 500000.00, actual : 499999, programmed DutyCycle : 10.00, actual : 10.00
+PWM Channel : 2, programmed Period (us): 333333.33, actual : 333338, programmed DutyCycle : 20.00, actual : 20.00
+PWM Channel : 3, programmed Period (us): 250000.00, actual : 249997, programmed DutyCycle : 30.00, actual : 30.00
+PWM Channel : 4, programmed Period (us): 200000.00, actual : 199997, programmed DutyCycle : 40.00, actual : 40.00
+PWM Channel : 5, programmed Period (us): 166666.67, actual : 166676, programmed DutyCycle : 45.00, actual : 45.00
+PWM Channel : 6, programmed Period (us): 142857.14, actual : 142857, programmed DutyCycle : 50.00, actual : 50.00
+PWM Channel : 7, programmed Period (us): 125000.00, actual : 124996, programmed DutyCycle : 55.00, actual : 55.00
+PWM Channel : 8, programmed Period (us): 111111.11, actual : 111115, programmed DutyCycle : 60.00, actual : 60.00
+PWM Channel : 9, programmed Period (us): 100000.00, actual : 99996, programmed DutyCycle : 65.00, actual : 65.01
+PWM Channel : 10, programmed Period (us): 66666.67, actual : 66673, programmed DutyCycle : 70.00, actual : 69.99
+PWM Channel : 11, programmed Period (us): 50000.00, actual : 49993, programmed DutyCycle : 75.00, actual : 75.02
+PWM Channel : 12, programmed Period (us): 40000.00, actual : 39993, programmed DutyCycle : 80.00, actual : 80.02
+PWM Channel : 13, programmed Period (us): 33333.33, actual : 33331, programmed DutyCycle : 85.00, actual : 84.97
+PWM Channel : 14, programmed Period (us): 25000.00, actual : 24992, programmed DutyCycle : 90.00, actual : 90.02
+PWM Channel : 15, programmed Period (us): 20000.00, actual : 19990, programmed DutyCycle : 95.00, actual : 95.01
+SimpleTimer (ms): 2000, us : 23639308, Dus : 10011181
+PWM Channel : 0, programmed Period (us): 1000000.00, actual : 999999, programmed DutyCycle : 5.00, actual : 5.00
+PWM Channel : 1, programmed Period (us): 500000.00, actual : 499999, programmed DutyCycle : 10.00, actual : 10.00
+PWM Channel : 2, programmed Period (us): 333333.33, actual : 333338, programmed DutyCycle : 20.00, actual : 20.00
+PWM Channel : 3, programmed Period (us): 250000.00, actual : 249997, programmed DutyCycle : 30.00, actual : 30.00
+PWM Channel : 4, programmed Period (us): 200000.00, actual : 199997, programmed DutyCycle : 40.00, actual : 40.00
+PWM Channel : 5, programmed Period (us): 166666.67, actual : 166676, programmed DutyCycle : 45.00, actual : 45.00
+PWM Channel : 6, programmed Period (us): 142857.14, actual : 142857, programmed DutyCycle : 50.00, actual : 50.00
+PWM Channel : 7, programmed Period (us): 125000.00, actual : 124997, programmed DutyCycle : 55.00, actual : 55.00
+PWM Channel : 8, programmed Period (us): 111111.11, actual : 111115, programmed DutyCycle : 60.00, actual : 60.00
+PWM Channel : 9, programmed Period (us): 100000.00, actual : 99996, programmed DutyCycle : 65.00, actual : 65.01
+PWM Channel : 10, programmed Period (us): 66666.67, actual : 66673, programmed DutyCycle : 70.00, actual : 69.99
+PWM Channel : 11, programmed Period (us): 50000.00, actual : 49994, programmed DutyCycle : 75.00, actual : 75.02
+PWM Channel : 12, programmed Period (us): 40000.00, actual : 39993, programmed DutyCycle : 80.00, actual : 80.02
+PWM Channel : 13, programmed Period (us): 33333.33, actual : 33331, programmed DutyCycle : 85.00, actual : 84.95
+PWM Channel : 14, programmed Period (us): 25000.00, actual : 24992, programmed DutyCycle : 90.00, actual : 90.01
+PWM Channel : 15, programmed Period (us): 20000.00, actual : 19999, programmed DutyCycle : 95.00, actual : 95.00
 
 ```
 
 ---
 
-### 3. ISR_16_PWMs_Array_Complex on SEEED_XIAO_M0
+### 3. ISR_4_PWMs_Array_Complex on SEEED_XIAO_M0
 
-The following is the sample terminal output when running example [ISR_16_PWMs_Array_Complex](examples/SAMD21/ISR_16_PWMs_Array_Complex) on SEEED_XIAO_M0 to demonstrate how to use multiple PWM channels with complex callback functions, the accuracy of ISR Hardware PWM-channels, **especially when system is very busy**.  The ISR PWM-channels is **running exactly according to corresponding programmed periods and duty-cycles**
+The following is the sample terminal output when running example [ISR_4_PWMs_Array_Complex](examples/SAMD21/ISR_16_PWMs_Array_Complex) on SEEED_XIAO_M0 to demonstrate how to use multiple PWM channels with complex callback functions, the accuracy of ISR Hardware PWM-channels, **especially when system is very busy**.  The ISR PWM-channels is **running exactly according to corresponding programmed periods and duty-cycles**
 
 
 ```
 Starting ISR_16_PWMs_Array_Complex on SEEED_XIAO_M0
-SAMD_Slow_PWM v1.1.0
-[PWM] _period = 20 , frequency = 50000.00
-[PWM] SAMDTimerInterrupt: F_CPU (MHz) = 48 , TIMER_HZ = 48
-[PWM] TC3_Timer::startTimer _Timer = 0x 42002c00 , TC3 = 0x 42002c00
-[PWM] SAMD21 TC3 period = 20 , _prescaler = 1
-[PWM] _compareValue = 959
+SAMD_Slow_PWM v1.2.0
 Starting ITimer OK, micros() = 2681651
 Channel : 0	Period : 1000000		OnTime : 50000	Start_Time : 2682003
 Channel : 1	Period : 500000		OnTime : 50000	Start_Time : 2682003
 Channel : 2	Period : 66666		OnTime : 13333	Start_Time : 2682003
 Channel : 3	Period : 50000		OnTime : 15000	Start_Time : 2682003
-Channel : 4	Period : 40000		OnTime : 16000	Start_Time : 2682003
-Channel : 5	Period : 33333		OnTime : 16666	Start_Time : 2682003
-Channel : 6	Period : 25000		OnTime : 15000	Start_Time : 2682003
-Channel : 7	Period : 20000		OnTime : 14000	Start_Time : 2682003
 SimpleTimer (ms): 2000, us : 22699166, Dus : 10011622
 PWM Channel : 0, programmed Period (us): 1000000, actual : 1000000, programmed DutyCycle : 5, actual : 5.00
 PWM Channel : 1, programmed Period (us): 500000, actual : 500009, programmed DutyCycle : 10, actual : 10.00
 PWM Channel : 2, programmed Period (us): 66666, actual : 66679, programmed DutyCycle : 20, actual : 19.98
 PWM Channel : 3, programmed Period (us): 50000, actual : 50005, programmed DutyCycle : 30, actual : 29.99
-PWM Channel : 4, programmed Period (us): 40000, actual : 40010, programmed DutyCycle : 40, actual : 39.97
-PWM Channel : 5, programmed Period (us): 33333, actual : 33343, programmed DutyCycle : 50, actual : 49.95
-PWM Channel : 6, programmed Period (us): 25000, actual : 24985, programmed DutyCycle : 60, actual : 60.00
-PWM Channel : 7, programmed Period (us): 20000, actual : 19980, programmed DutyCycle : 70, actual : 69.96
 SimpleTimer (ms): 2000, us : 32713108, Dus : 10013942
 PWM Channel : 0, programmed Period (us): 1000000, actual : 1000000, programmed DutyCycle : 5, actual : 5.00
 PWM Channel : 1, programmed Period (us): 500000, actual : 499999, programmed DutyCycle : 10, actual : 10.00
 PWM Channel : 2, programmed Period (us): 66666, actual : 66679, programmed DutyCycle : 20, actual : 19.98
 PWM Channel : 3, programmed Period (us): 50000, actual : 49999, programmed DutyCycle : 30, actual : 30.00
-PWM Channel : 4, programmed Period (us): 40000, actual : 39999, programmed DutyCycle : 40, actual : 40.00
-PWM Channel : 5, programmed Period (us): 33333, actual : 33336, programmed DutyCycle : 50, actual : 49.96
-PWM Channel : 6, programmed Period (us): 25000, actual : 24994, programmed DutyCycle : 60, actual : 60.01
-PWM Channel : 7, programmed Period (us): 20000, actual : 20000, programmed DutyCycle : 70, actual : 70.00
 ```
 
 ---
@@ -1086,18 +1108,12 @@ The following is the sample terminal output when running example [ISR_Modify_PWM
 
 ```
 Starting ISR_Modify_PWM on SAMD_NANO_33_IOT
-SAMD_Slow_PWM v1.1.0
-[PWM] _period = 20 , frequency = 50000.00
-[PWM] SAMDTimerInterrupt: F_CPU (MHz) = 48 , TIMER_HZ = 48
-[PWM] TC3_Timer::startTimer _Timer = 0x 42002c00 , TC3 = 0x 42002c00
-[PWM] SAMD21 TC3 period = 20 , _prescaler = 1
-[PWM] _compareValue = 959
-Starting ITimer OK, micros() = 2821686
-Using PWM Freq = 1.00, PWM DutyCycle = 10
-Channel : 0	Period : 1000000		OnTime : 100000	Start_Time : 2822762
-Channel : 0	Period : 500000		OnTime : 450000	Start_Time : 12824098
-Channel : 0	Period : 1000000		OnTime : 100000	Start_Time : 22825080
-Channel : 0	Period : 500000		OnTime : 450000	Start_Time : 32826081
+SAMD_Slow_PWM v1.2.0
+Starting ITimer OK, micros() = 2830379
+Using PWM Freq = 1.00, PWM DutyCycle = 50.00
+Channel : 0	    Period : 1000000.00		OnTime : 500000	Start_Time : 2831416
+Channel : 0	New Period : 500000.00		OnTime : 450000.00	Start_Time : 12831530
+Channel : 0	New Period : 1000000.00		OnTime : 500000.00	Start_Time : 22831580
 ```
 
 ---
@@ -1108,21 +1124,12 @@ The following is the sample terminal output when running example [ISR_Changing_P
 
 ```
 Starting ISR_Changing_PWM on SAMD_NANO_33_IOT
-SAMD_Slow_PWM v1.1.0
-[PWM] _period = 20 , frequency = 50000.00
-[PWM] SAMDTimerInterrupt: F_CPU (MHz) = 48 , TIMER_HZ = 48
-[PWM] TC3_Timer::startTimer _Timer = 0x 42002c00 , TC3 = 0x 42002c00
-[PWM] SAMD21 TC3 period = 20 , _prescaler = 1
-[PWM] _compareValue = 959
-Starting ITimer OK, micros() = 2921757
-Using PWM Freq = 1.00, PWM DutyCycle = 50
-Channel : 0	Period : 1000000		OnTime : 500000	Start_Time : 2922855
-Using PWM Freq = 2.00, PWM DutyCycle = 90
-Channel : 0	Period : 500000		OnTime : 450000	Start_Time : 12924175
-Using PWM Freq = 1.00, PWM DutyCycle = 50
-Channel : 0	Period : 1000000		OnTime : 500000	Start_Time : 22925508
-Using PWM Freq = 2.00, PWM DutyCycle = 90
-Channel : 0	Period : 500000		OnTime : 450000	Start_Time : 32926654
+SAMD_Slow_PWM v1.2.0
+Starting ITimer OK, micros() = 2630349
+Using PWM Freq = 1.00, PWM DutyCycle = 50.00
+Channel : 0	    Period : 1000000.00		OnTime : 500000	Start_Time : 2631438
+Using PWM Freq = 2.00, PWM DutyCycle = 90.00
+Channel : 0	    Period : 500000.00		OnTime : 450000	Start_Time : 12632820
 ```
 
 ---
@@ -1133,22 +1140,22 @@ The following is the sample terminal output when running example [ISR_Modify_PWM
 
 ```
 Starting ISR_Modify_PWM on ITSYBITSY_M4
-SAMD_Slow_PWM v1.1.0
-[PWM] SAMDTimerInterrupt: F_CPU (MHz) = 120 , TIMER_HZ = 48
-[PWM] TC_Timer::startTimer _Timer = 0x 4101c000 , TC3 = 0x 4101c000
-[PWM] SAMD51 TC3 period = 20 , _prescaler = 1
-[PWM] _compareValue = 959
-Starting ITimer OK, micros() = 3821127
-Using PWM Freq = 1.00, PWM DutyCycle = 10
-Channel : 0	Period : 1000000		OnTime : 100000	Start_Time : 3821615
-Channel : 0	Period : 500000		OnTime : 450000	Start_Time : 13823005
-Channel : 0	Period : 1000000		OnTime : 100000	Start_Time : 23824004
-Channel : 0	Period : 500000		OnTime : 450000	Start_Time : 33825004
-Channel : 0	Period : 1000000		OnTime : 100000	Start_Time : 43826004
-Channel : 0	Period : 500000		OnTime : 450000	Start_Time : 53827004
-Channel : 0	Period : 1000000		OnTime : 100000	Start_Time : 63828004
-Channel : 0	Period : 500000		OnTime : 450000	Start_Time : 73829003
-Channel : 0	Period : 1000000		OnTime : 100000	Start_Time : 83830004
+SAMD_Slow_PWM v1.2.0
+Starting ITimer OK, micros() = 2970226
+Using PWM Freq = 1.00, PWM DutyCycle = 50.00
+Channel : 0	    Period : 1000000.00		OnTime : 500000	Start_Time : 2970836
+Channel : 0	New Period : 500000.00		OnTime : 450000.00	Start_Time : 12970846
+Channel : 0	New Period : 1000000.00		OnTime : 500000.00	Start_Time : 22970846
+Channel : 0	New Period : 500000.00		OnTime : 450000.00	Start_Time : 32470846
+Channel : 0	New Period : 1000000.00		OnTime : 500000.00	Start_Time : 42970846
+Channel : 0	New Period : 500000.00		OnTime : 450000.00	Start_Time : 52470846
+Channel : 0	New Period : 1000000.00		OnTime : 500000.00	Start_Time : 62970846
+Channel : 0	New Period : 500000.00		OnTime : 450000.00	Start_Time : 72470846
+Channel : 0	New Period : 1000000.00		OnTime : 500000.00	Start_Time : 82970846
+Channel : 0	New Period : 500000.00		OnTime : 450000.00	Start_Time : 92470846
+Channel : 0	New Period : 1000000.00		OnTime : 500000.00	Start_Time : 102970846
+Channel : 0	New Period : 500000.00		OnTime : 450000.00	Start_Time : 112470846
+Channel : 0	New Period : 1000000.00		OnTime : 500000.00	Start_Time : 122970846
 ```
 
 ---
@@ -1159,20 +1166,14 @@ The following is the sample terminal output when running example [ISR_Changing_P
 
 ```
 Starting ISR_Changing_PWM on ITSYBITSY_M4
-SAMD_Slow_PWM v1.1.0
-[PWM] SAMDTimerInterrupt: F_CPU (MHz) = 120 , TIMER_HZ = 48
-[PWM] TC_Timer::startTimer _Timer = 0x 4101c000 , TC3 = 0x 4101c000
-[PWM] SAMD51 TC3 period = 20 , _prescaler = 1
-[PWM] _compareValue = 959
-Starting ITimer OK, micros() = 2721076
-Using PWM Freq = 1.00, PWM DutyCycle = 50
-Channel : 0	Period : 1000000		OnTime : 500000	Start_Time : 2721574
-Using PWM Freq = 2.00, PWM DutyCycle = 90
-Channel : 0	Period : 500000		OnTime : 450000	Start_Time : 12722174
-Using PWM Freq = 1.00, PWM DutyCycle = 50
-Channel : 0	Period : 1000000		OnTime : 500000	Start_Time : 22722759
-Using PWM Freq = 2.00, PWM DutyCycle = 90
-Channel : 0	Period : 500000		OnTime : 450000	Start_Time : 32723417
+SAMD_Slow_PWM v1.2.0
+Starting ITimer OK, micros() = 3420227
+Using PWM Freq = 1.00, PWM DutyCycle = 50.00
+Channel : 0	    Period : 1000000.00		OnTime : 500000	Start_Time : 3420866
+Using PWM Freq = 2.00, PWM DutyCycle = 90.00
+Channel : 0	    Period : 500000.00		OnTime : 450000	Start_Time : 13421538
+Using PWM Freq = 1.00, PWM DutyCycle = 50.00
+Channel : 0	    Period : 1000000.00		OnTime : 500000	Start_Time : 23422323
 ```
 
 ---
@@ -1206,6 +1207,7 @@ Sometimes, the library will only work if you update the board core to the latest
 Submit issues to: [SAMD_Slow_PWM issues](https://github.com/khoih-prog/SAMD_Slow_PWM/issues)
 
 ---
+---
 
 ## TO DO
 
@@ -1219,6 +1221,12 @@ Submit issues to: [SAMD_Slow_PWM issues](https://github.com/khoih-prog/SAMD_Slow
 1. Basic hardware multi-channel PWM for **SAMD21/SAMD51 boards** such as NANO_33_IOT, ITSYBITSY_M4, SEEED_XIAO_M0, SparkFun_SAMD51_Thing_Plus, etc. using Arduino, Adafruit or Sparkfun core
 2. Add Table of Contents
 3. Add functions to modify PWM settings on-the-fly
+4. Fix `multiple-definitions` linker error. Drop `src_cpp` and `src_h` directories
+5. DutyCycle to be optionally updated at the end current PWM period instead of immediately.
+6. Add examples [SAMD21 multiFileProject](examples/SAMD21/multiFileProject) and [SAMD51 multiFileProject](examples/SAMD51/multiFileProject)to demo for multiple-file project
+7. Improve accuracy by using `double`, instead of `uint32_t` for `dutycycle`, `period`.
+8. Optimize library code by using `reference-passing` instead of `value-passing`
+9. Add support to many more boards, such as `SAMD21E1xA`, `SAMD21G1xA` and`SAMD21J1xA`
 
 ---
 ---

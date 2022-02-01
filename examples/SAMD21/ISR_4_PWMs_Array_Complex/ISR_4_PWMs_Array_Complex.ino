@@ -1,5 +1,5 @@
 /****************************************************************************************************************************
-  ISR_16_PWMs_Array_Complex.ino
+  ISR_4_PWMs_Array_Complex.ino
   For SAMD21/SAMD51 boards
   Written by Khoi Hoang
 
@@ -13,11 +13,17 @@
   This important feature is absolutely necessary for mission-critical tasks.
 *****************************************************************************************************************************/
 
-#if !( defined(__SAMD51__) || defined(__SAMD51J20A__) || defined(__SAMD51J19A__) || defined(__SAMD51G19A__) || defined(__SAMD51P19A__) )
-  #error This code is designed to run on SAMD51 platform! Please check your Tools->Board setting.
+#if !( defined(ARDUINO_SAMD_ZERO) || defined(ARDUINO_SAMD_MKR1000) || defined(ARDUINO_SAMD_MKRWIFI1010) || defined(ARDUINO_SAMD_NANO_33_IOT) \
+    || defined(ARDUINO_SAMD_MKRFox1200) || defined(ARDUINO_SAMD_MKRWAN1300) || defined(ARDUINO_SAMD_MKRWAN1310) || defined(ARDUINO_SAMD_MKRGSM1400) \
+    || defined(ARDUINO_SAMD_MKRNB1500) || defined(ARDUINO_SAMD_MKRVIDOR4000) || defined(ARDUINO_SAMD_CIRCUITPLAYGROUND_EXPRESS) \
+    || defined(__SAMD21E15A__) || defined(__SAMD21E16A__) || defined(__SAMD21E17A__) || defined(__SAMD21E18A__) \
+    || defined(__SAMD21G15A__) || defined(__SAMD21G16A__) || defined(__SAMD21G17A__) || defined(__SAMD21G18A__) \
+    || defined(__SAMD21J15A__) || defined(__SAMD21J16A__) || defined(__SAMD21J17A__) || defined(__SAMD21J18A__) || defined(__SAMD21__) )
+  #error This code is designed to run on SAMD21 platform! Please check your Tools->Board setting.
 #endif
 
-// These define's must be placed at the beginning before #include "ESP32_PWM.h"
+
+// These define's must be placed at the beginning before #include "SAMD_Slow_PWM.h"
 // _PWM_LOGLEVEL_ from 0 to 4
 // Don't define _PWM_LOGLEVEL_ > 0. Only for special ISR debugging only. Can hang the system.
 #define _PWM_LOGLEVEL_      4
@@ -43,21 +49,23 @@
   #define LED_BUILTIN       13
 #endif
 
-#ifndef LED_BLUE
-  #define LED_BLUE          2
-#endif
-
-#ifndef LED_RED
-  #define LED_RED           3
-#endif
-
-#define HW_TIMER_INTERVAL_US      30L
+// Use 50uS for slow SAMD21
+#define HW_TIMER_INTERVAL_US      50L
 
 uint64_t startMicros = 0;
 
-// You can only select SAMD51 Hardware Timer TC3
+// You can select SAMD Hardware Timer  from SAMD_TIMER_1 or SAMD_TIMER_3
+
+// Depending on the board, you can select SAMD21 Hardware Timer from TC3-TCC
+// SAMD21 Hardware Timer from TC3 or TCC
+
 // Init SAMD timer TIMER_TC3
 SAMDTimer ITimer(TIMER_TC3);
+
+// Init SAMD timer TIMER_TCC
+//SAMDTimer ITimer(TIMER_TCC);
+
+
 
 // Init SAMD_Slow_PWM
 SAMD_Slow_PWM ISR_PWM;
@@ -72,15 +80,10 @@ void TimerHandler()
 
 /////////////////////////////////////////////////
 
-#define NUMBER_ISR_PWMS         16
+// Use max 4 for slow SAMD21
+#define NUMBER_ISR_PWMS         4
 
-#define PIN_D0      0
-#define PIN_D1      1
 #define PIN_D2      2
-#define PIN_D3      3
-#define PIN_D4      4
-#define PIN_D5      5
-#define PIN_D6      6
 #define PIN_D7      7
 #define PIN_D8      8
 #define PIN_D9      9
@@ -132,38 +135,34 @@ void doingSomethingStop(int index);
 
 #else   // #if USE_COMPLEX_STRUCT
 
-volatile unsigned long deltaMicrosStart    [] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-volatile unsigned long previousMicrosStart [] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+volatile unsigned long deltaMicrosStart    [] = { 0, 0, 0, 0 };
+volatile unsigned long previousMicrosStart [] = { 0, 0, 0, 0 };
 
-volatile unsigned long deltaMicrosStop     [] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-volatile unsigned long previousMicrosStop  [] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+volatile unsigned long deltaMicrosStop     [] = { 0, 0, 0, 0 };
+volatile unsigned long previousMicrosStop  [] = { 0, 0, 0, 0 };
 
 // You can assign pins here. Be carefull to select good pin to use or crash, e.g pin 6-11
 uint32_t PWM_Pin[] =
 {
-   LED_BUILTIN,   LED_BLUE,   LED_RED, PIN_D0, PIN_D1,  PIN_D2,  PIN_D3,  PIN_D4,
-        PIN_D5,     PIN_D6,    PIN_D7, PIN_D8, PIN_D9, PIN_D10, PIN_D11, PIN_D12
+   LED_BUILTIN, PIN_D2, PIN_D7, PIN_D8
 };
 
 // You can assign any interval for any timer here, in microseconds
 double PWM_Period[] =
 {
-  1000000.0,     500000.0,   333333.333,   250000.0,   200000.0,   166666.666,   142857.143,   125000.0,
-   111111.111,   100000.0,    66666.666,    50000.0,    40000.0,    33333.333,    25000.0,      20000.0
+  1000000.0,   500000.0,   333333.333,    50000.0
 };
 
 // You can assign any interval for any timer here, in Hz
 double PWM_Freq[] =
 {
-  1.0f,  2.0f,  3.0f,  4.0f,  5.0f,  6.0f,  7.0f,  8.0f,
-  9.0f, 10.0f, 15.0f, 20.0f, 25.0f, 30.0f, 40.0f, 50.0f
+  1.0,  2.0,  3.0,  4.0
 };
 
 // You can assign any interval for any timer here, in milliseconds
 double PWM_DutyCycle[] =
 {
-   5.00, 10.00, 20.00, 30.00, 40.00, 45.00, 50.00, 55.00,
-  60.00, 65.00, 70.00, 75.00, 80.00, 85.00, 90.00, 95.00
+   40.00, 45.00, 50.00, 55.00
 };
 
 void doingSomethingStart(int index)
@@ -209,65 +208,6 @@ void doingSomethingStart3()
   doingSomethingStart(3);
 }
 
-void doingSomethingStart4()
-{
-  doingSomethingStart(4);
-}
-
-void doingSomethingStart5()
-{
-  doingSomethingStart(5);
-}
-
-void doingSomethingStart6()
-{
-  doingSomethingStart(6);
-}
-
-void doingSomethingStart7()
-{
-  doingSomethingStart(7);
-}
-
-void doingSomethingStart8()
-{
-  doingSomethingStart(8);
-}
-
-void doingSomethingStart9()
-{
-  doingSomethingStart(9);
-}
-
-void doingSomethingStart10()
-{
-  doingSomethingStart(10);
-}
-
-void doingSomethingStart11()
-{
-  doingSomethingStart(11);
-}
-
-void doingSomethingStart12()
-{
-  doingSomethingStart(12);
-}
-
-void doingSomethingStart13()
-{
-  doingSomethingStart(13);
-}
-
-void doingSomethingStart14()
-{
-  doingSomethingStart(14);
-}
-
-void doingSomethingStart15()
-{
-  doingSomethingStart(15);
-}
 
 //////////////////////////////////////////////////////
 
@@ -291,65 +231,6 @@ void doingSomethingStop3()
   doingSomethingStop(3);
 }
 
-void doingSomethingStop4()
-{
-  doingSomethingStop(4);
-}
-
-void doingSomethingStop5()
-{
-  doingSomethingStop(5);
-}
-
-void doingSomethingStop6()
-{
-  doingSomethingStop(6);
-}
-
-void doingSomethingStop7()
-{
-  doingSomethingStop(7);
-}
-
-void doingSomethingStop8()
-{
-  doingSomethingStop(8);
-}
-
-void doingSomethingStop9()
-{
-  doingSomethingStop(9);
-}
-
-void doingSomethingStop10()
-{
-  doingSomethingStop(10);
-}
-
-void doingSomethingStop11()
-{
-  doingSomethingStop(11);
-}
-
-void doingSomethingStop12()
-{
-  doingSomethingStop(12);
-}
-
-void doingSomethingStop13()
-{
-  doingSomethingStop(13);
-}
-
-void doingSomethingStop14()
-{
-  doingSomethingStop(14);
-}
-
-void doingSomethingStop15()
-{
-  doingSomethingStop(15);
-}
 
 //////////////////////////////////////////////////////
 
@@ -360,22 +241,10 @@ void doingSomethingStop15()
   ISR_PWM_Data curISR_PWM_Data[] =
   {
     // pin, irqCallbackStartFunc, irqCallbackStopFunc, PWM_Freq, PWM_DutyCycle, deltaMicrosStart, previousMicrosStart, deltaMicrosStop, previousMicrosStop
-    { LED_BUILTIN,  doingSomethingStart0,    doingSomethingStop0,    1.0,   5.0, 0, 0, 0, 0 },
-    { LED_BLUE,     doingSomethingStart1,    doingSomethingStop1,    2.0,  10.0, 0, 0, 0, 0 },
-    { LED_RED,      doingSomethingStart2,    doingSomethingStop2,    3.0,  20.0, 0, 0, 0, 0 },
-    { PIN_D0,       doingSomethingStart3,    doingSomethingStop3,    4.0,  30.0, 0, 0, 0, 0 },
-    { PIN_D1,       doingSomethingStart4,    doingSomethingStop4,    5.0,  40.0, 0, 0, 0, 0 },
-    { PIN_D2,       doingSomethingStart5,    doingSomethingStop5,    6.0,  45.0, 0, 0, 0, 0 },
-    { PIN_D3,       doingSomethingStart6,    doingSomethingStop6,    7.0,  50.0, 0, 0, 0, 0 },
-    { PIN_D4,       doingSomethingStart7,    doingSomethingStop7,    8.0,  55.0, 0, 0, 0, 0 },
-    { PIN_D5,       doingSomethingStart8,    doingSomethingStop8,    9.0,  60.0, 0, 0, 0, 0 },
-    { PIN_D6,       doingSomethingStart9,    doingSomethingStop9,   10.0,  65.0, 0, 0, 0, 0 },
-    { PIN_D7,       doingSomethingStart10,   doingSomethingStop10,  15.0,  70.0, 0, 0, 0, 0 },
-    { PIN_D8,       doingSomethingStart11,   doingSomethingStop11,  20.0,  75.0, 0, 0, 0, 0 },
-    { PIN_D9,       doingSomethingStart12,   doingSomethingStop12,  25.0,  80.0, 0, 0, 0, 0 },
-    { PIN_D10,      doingSomethingStart13,   doingSomethingStop13,  30.0,  85.0, 0, 0, 0, 0 },
-    { PIN_D11,      doingSomethingStart14,   doingSomethingStop14,  40.0,  90.0, 0, 0, 0, 0 },
-    { PIN_D12,      doingSomethingStart15,   doingSomethingStop15,  50.0,  95.0, 0, 0, 0, 0 }
+    { LED_BUILTIN,  doingSomethingStart0,   doingSomethingStop0,    1.0,   5.0, 0, 0, 0, 0 },
+    { PIN_D2,       doingSomethingStart1,   doingSomethingStop1,    2.0,  10.0, 0, 0, 0, 0 },
+    { PIN_D7,       doingSomethingStart2,   doingSomethingStop2,   15.0,  20.0, 0, 0, 0, 0 },
+    { PIN_D8,       doingSomethingStart3,   doingSomethingStop3,   20.0,  30.0, 0, 0, 0, 0 },
   };
   
   #else   // #if USING_PWM_FREQUENCY
@@ -383,22 +252,10 @@ void doingSomethingStop15()
   ISR_PWM_Data curISR_PWM_Data[] =
   {
     // pin, irqCallbackStartFunc, irqCallbackStopFunc, PWM_Period, PWM_DutyCycle, deltaMicrosStart, previousMicrosStart, deltaMicrosStop, previousMicrosStop
-    { LED_BUILTIN,  doingSomethingStart0,     doingSomethingStop0,   1000000.0,    5.0, 0, 0, 0, 0 },
-    { LED_BLUE,     doingSomethingStart1,     doingSomethingStop1,    500000.0,   10.0, 0, 0, 0, 0 },
-    { LED_RED,      doingSomethingStart2,     doingSomethingStop2,    333333.333, 20.0, 0, 0, 0, 0 },
-    { PIN_D0,       doingSomethingStart3,     doingSomethingStop3,    250000.0,   30.0, 0, 0, 0, 0 },
-    { PIN_D1,       doingSomethingStart4,     doingSomethingStop4,    200000.0,   40.0, 0, 0, 0, 0 },
-    { PIN_D2,       doingSomethingStart5,     doingSomethingStop5,    166667.667, 45.0, 0, 0, 0, 0 },
-    { PIN_D3,       doingSomethingStart6,     doingSomethingStop6,    142857.143, 50.0, 0, 0, 0, 0 },
-    { PIN_D4,       doingSomethingStart7,     doingSomethingStop7,    125000.0,   55.0, 0, 0, 0, 0 },
-    { PIN_D5,       doingSomethingStart8,     doingSomethingStop8,    111111.111, 60.0, 0, 0, 0, 0 },
-    { PIN_D6,       doingSomethingStart9,     doingSomethingStop9,    100000.0,   65.0, 0, 0, 0, 0 },
-    { PIN_D7,       doingSomethingStart10,    doingSomethingStop10,    66666.667, 70.0, 0, 0, 0, 0 },
-    { PIN_D8,       doingSomethingStart11,    doingSomethingStop11,    50000.0,   75.0, 0, 0, 0, 0 },
-    { PIN_D9,       doingSomethingStart12,    doingSomethingStop12,    40000.0,   80.0, 0, 0, 0, 0 },
-    { PIN_D10,      doingSomethingStart13,    doingSomethingStop13,    33333.333, 85.0, 0, 0, 0, 0 },
-    { PIN_D11,      doingSomethingStart14,    doingSomethingStop14,    25000.0,   90.0, 0, 0, 0, 0 },
-    { PIN_D12,      doingSomethingStart15,    doingSomethingStop15,    20000.0,   95.0, 0, 0, 0, 0 }
+    { LED_BUILTIN,  doingSomethingStart0,    doingSomethingStop0,   1000000.0,    5.0, 0, 0, 0, 0 },
+    { PIN_D2,       doingSomethingStart5,    doingSomethingStop1,    166666.667, 10.0, 0, 0, 0, 0 },
+    { PIN_D7,       doingSomethingStart2,    doingSomethingStop2,     66666.667, 20.0, 0, 0, 0, 0 },
+    { PIN_D8,       doingSomethingStart3,    doingSomethingStop3,     50000.0,   30.0, 0, 0, 0, 0 },
   };
   
   #endif  // #if USING_PWM_FREQUENCY
@@ -425,18 +282,12 @@ void doingSomethingStop(int index)
 
 irqCallback irqCallbackStartFunc[] =
 {
-  doingSomethingStart0,  doingSomethingStart1,  doingSomethingStart2,  doingSomethingStart3,
-  doingSomethingStart4,  doingSomethingStart5,  doingSomethingStart6,  doingSomethingStart7,
-  doingSomethingStart8,  doingSomethingStart9,  doingSomethingStart10, doingSomethingStart11,
-  doingSomethingStart12, doingSomethingStart13, doingSomethingStart14, doingSomethingStart15
+  doingSomethingStart0,  doingSomethingStart1,  doingSomethingStart2,  doingSomethingStart3
 };
 
 irqCallback irqCallbackStopFunc[] =
 {
-  doingSomethingStop0,  doingSomethingStop1,  doingSomethingStop2,  doingSomethingStop3,
-  doingSomethingStop4,  doingSomethingStop5,  doingSomethingStop6,  doingSomethingStop7,
-  doingSomethingStop8,  doingSomethingStop9,  doingSomethingStop10, doingSomethingStop11,
-  doingSomethingStop12, doingSomethingStop13, doingSomethingStop14, doingSomethingStop15
+  doingSomethingStop0,  doingSomethingStop1,  doingSomethingStop2,  doingSomethingStop3
 };
 
 #endif    // #if USE_COMPLEX_STRUCT
@@ -469,7 +320,7 @@ void simpleTimerDoingSomething2s()
     Serial.print(F(", programmed Period (us): "));
 
   #if USING_PWM_FREQUENCY
-    Serial.print(1000000 / curISR_PWM_Data[i].PWM_Freq);
+    Serial.print(1000000.0 / curISR_PWM_Data[i].PWM_Freq);
   #else
     Serial.print(curISR_PWM_Data[i].PWM_Period);
   #endif
@@ -487,7 +338,7 @@ void simpleTimerDoingSomething2s()
     Serial.print(F("PWM Channel : ")); Serial.print(i);
     
   #if USING_PWM_FREQUENCY
-    Serial.print(1000000 / PWM_Freq[i]);
+    Serial.print(1000000.0 / PWM_Freq[i]);
   #else
     Serial.print(PWM_Period[i]);
   #endif
@@ -513,7 +364,7 @@ void setup()
 
   delay(2000);
 
-  Serial.print(F("\nStarting ISR_16_PWMs_Array_Complex on ")); Serial.println(BOARD_NAME);
+  Serial.print(F("\nStarting ISR_4_PWMs_Array_Complex on ")); Serial.println(BOARD_NAME);
   Serial.println(SAMD_SLOW_PWM_VERSION);
 
   // Interval in microsecs

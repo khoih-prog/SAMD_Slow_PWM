@@ -1,5 +1,5 @@
 /****************************************************************************************************************************
-  ISR_16_PWMs_Array.ino
+  ISR_4_PWMs_Array_Simple.ino
   For SAMD21/SAMD51 boards
   Written by Khoi Hoang
 
@@ -13,14 +13,17 @@
   This important feature is absolutely necessary for mission-critical tasks.
 *****************************************************************************************************************************/
 
-#if !( defined(__SAMD51__) || defined(__SAMD51J20A__) || defined(__SAMD51J19A__) || defined(__SAMD51G19A__) || defined(__SAMD51P19A__) )
-  #error This code is designed to run on SAMD51 platform! Please check your Tools->Board setting.
+#if !( defined(ARDUINO_SAMD_ZERO) || defined(ARDUINO_SAMD_MKR1000) || defined(ARDUINO_SAMD_MKRWIFI1010) \
+    || defined(ARDUINO_SAMD_NANO_33_IOT) || defined(ARDUINO_SAMD_MKRFox1200) || defined(ARDUINO_SAMD_MKRWAN1300) || defined(ARDUINO_SAMD_MKRWAN1310) \
+    || defined(ARDUINO_SAMD_MKRGSM1400) || defined(ARDUINO_SAMD_MKRNB1500) || defined(ARDUINO_SAMD_MKRVIDOR4000) || defined(__SAMD21G18A__) \
+    || defined(ARDUINO_SAMD_CIRCUITPLAYGROUND_EXPRESS) || defined(__SAMD21G18A__) )
+  #error This code is designed to run on SAMD21 platform! Please check your Tools->Board setting.
 #endif
 
-// These define's must be placed at the beginning before #include "ESP32_PWM.h"
+// These define's must be placed at the beginning before #include "SAMD_Slow_PWM.h"
 // _PWM_LOGLEVEL_ from 0 to 4
 // Don't define _PWM_LOGLEVEL_ > 0. Only for special ISR debugging only. Can hang the system.
-#define _PWM_LOGLEVEL_                4
+#define _PWM_LOGLEVEL_      4
 
 #define USING_MICROS_RESOLUTION       true    //false
 
@@ -47,13 +50,18 @@
   #define LED_RED           3
 #endif
 
-#define HW_TIMER_INTERVAL_US      30L
+
+// Use 50uS for slow SAMD21
+#define HW_TIMER_INTERVAL_US      50L
 
 uint64_t startMicros = 0;
 
-// You can only select SAMD51 Hardware Timer TC3
 // Init SAMD timer TIMER_TC3
 SAMDTimer ITimer(TIMER_TC3);
+
+// Init SAMD timer TIMER_TCC
+//SAMDTimer ITimer(TIMER_TCC);
+
 
 // Init SAMD_Slow_PWM
 SAMD_Slow_PWM ISR_PWM;
@@ -67,15 +75,10 @@ void TimerHandler()
 
 //////////////////////////////////////////////////////
 
-#define NUMBER_ISR_PWMS         16
+// Use max 4 for slow SAMD21
+#define NUMBER_ISR_PWMS         4
 
-#define PIN_D0      0
-#define PIN_D1      1
 #define PIN_D2      2
-#define PIN_D3      3
-#define PIN_D4      4
-#define PIN_D5      5
-#define PIN_D6      6
 #define PIN_D7      7
 #define PIN_D8      8
 #define PIN_D9      9
@@ -91,121 +94,39 @@ void TimerHandler()
 
 // You can assign pins here. Be carefull to select good pin to use or crash, e.g pin 6-11
 uint32_t PWM_Pin[] =
-{
-   LED_BUILTIN,   LED_BLUE,   LED_RED, PIN_D0, PIN_D1,  PIN_D2,  PIN_D3,  PIN_D4,
-         PIN_D5,    PIN_D6,    PIN_D7, PIN_D8, PIN_D9, PIN_D10, PIN_D11, PIN_D12
+{  
+   LED_BUILTIN, PIN_D2, PIN_D7, PIN_D8
 };
 
 // You can assign any interval for any timer here, in microseconds
 double PWM_Period[] =
 {
-  1000000.0,     500000.0,   333333.333,   250000.0,   200000.0,   166666.666,   142857.143,   125000.0,
-   111111.111,   100000.0,    66666.666,    50000.0,    40000.0,    33333.333,    25000.0,      20000.0
+  1000000.0,   500000.0,   333333.333,    50000.0
 };
 
 // You can assign any interval for any timer here, in Hz
 double PWM_Freq[] =
 {
-  1.0f,  2.0f,  3.0f,  4.0f,  5.0f,  6.0f,  7.0f,  8.0f,
-  9.0f, 10.0f, 15.0f, 20.0f, 25.0f, 30.0f, 40.0f, 50.0f
+  1.0,  2.0,  3.0,  4.0
 };
 
 // You can assign any interval for any timer here, in milliseconds
 double PWM_DutyCycle[] =
 {
-   5.00, 10.00, 20.00, 30.00, 40.00, 45.00, 50.00, 55.00,
-  60.00, 65.00, 70.00, 75.00, 80.00, 85.00, 90.00, 95.00
+   40.00, 45.00, 50.00, 55.00
 };
 
-
-typedef void (*irqCallback)  ();
-
-
-// In SAMD, avoid doing something fancy in ISR, for example complex Serial.print with String() argument
-// The pure simple Serial.prints here are just for demonstration and testing. Must be eliminate in working environment
-// Or you can get this run-time error / crash
-void doingSomething0()
-{
-}
-
-void doingSomething1()
-{
-}
-
-void doingSomething2()
-{
-}
-
-void doingSomething3()
-{
-}
-
-void doingSomething4()
-{
-}
-
-void doingSomething5()
-{
-}
-
-void doingSomething6()
-{
-}
-
-void doingSomething7()
-{
-}
-
-void doingSomething8()
-{
-}
-
-void doingSomething9()
-{
-}
-
-void doingSomething10()
-{
-}
-
-void doingSomething11()
-{
-}
-
-void doingSomething12()
-{
-}
-
-void doingSomething13()
-{
-}
-
-void doingSomething14()
-{
-}
-
-void doingSomething15()
-{
-}
-
-irqCallback irqCallbackStartFunc[] =
-{
-  doingSomething0,  doingSomething1,  doingSomething2,  doingSomething3, 
-  doingSomething4,  doingSomething5,  doingSomething6,  doingSomething7, 
-  doingSomething8,  doingSomething9,  doingSomething10, doingSomething11,
-  doingSomething12, doingSomething13, doingSomething14, doingSomething15
-};
 
 ////////////////////////////////////////////////
 
 void setup()
-{ 
+{
   Serial.begin(115200);
   while (!Serial);
 
   delay(2000);
 
-  Serial.print(F("\nStarting ISR_16_PWMs_Array on ")); Serial.println(BOARD_NAME);
+  Serial.print(F("\nStarting ISR_4_PWMs_Array_Simple on ")); Serial.println(BOARD_NAME);
   Serial.println(SAMD_SLOW_PWM_VERSION);
 
   // Interval in microsecs
@@ -217,7 +138,6 @@ void setup()
   else
     Serial.println(F("Can't set ITimer. Select another freq. or timer"));
 
-#if 1
   // Just to demonstrate, don't use too many ISR Timers if not absolutely necessary
   // You can use up to 16 timer for each ISR_PWM
   for (uint16_t i = 0; i < NUMBER_ISR_PWMS; i++)
@@ -228,19 +148,18 @@ void setup()
 #if USING_PWM_FREQUENCY
 
     // You can use this with PWM_Freq in Hz
-    ISR_PWM.setPWM(PWM_Pin[i], PWM_Freq[i], PWM_DutyCycle[i], irqCallbackStartFunc[i]);
+    ISR_PWM.setPWM(PWM_Pin[i], PWM_Freq[i], PWM_DutyCycle[i]);
 
 #else
   #if USING_MICROS_RESOLUTION
     // Or using period in microsecs resolution
-    ISR_PWM.setPWM_Period(PWM_Pin[i], PWM_Period[i], PWM_DutyCycle[i], irqCallbackStartFunc[i]);
+    ISR_PWM.setPWM_Period(PWM_Pin[i], PWM_Period[i], PWM_DutyCycle[i]);
   #else
     // Or using period in millisecs resolution
-    ISR_PWM.setPWM_Period(PWM_Pin[i], PWM_Period[i] / 1000, PWM_DutyCycle[i], irqCallbackStartFunc[i]);
+    ISR_PWM.setPWM_Period(PWM_Pin[i], PWM_Period[i] / 1000, PWM_DutyCycle[i]);
   #endif
 #endif
   }
-#endif  
 }
 
 void loop()

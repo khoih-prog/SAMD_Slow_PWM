@@ -12,6 +12,7 @@
 ## Table of Contents
 
 * [Changelog](#changelog)
+  * [Releases v1.2.0](#releases-v120)
   * [Releases v1.1.0](#releases-v110)
   * [Initial Releases v1.0.0](#Initial-Releases-v100)
 
@@ -19,6 +20,17 @@
 ---
 
 ## Changelog
+
+### Releases v1.2.0
+
+1. Fix `multiple-definitions` linker error. Drop `src_cpp` and `src_h` directories
+2. DutyCycle to be optionally updated at the end current PWM period instead of immediately. Check [DutyCycle to be updated at the end current PWM period #2](https://github.com/khoih-prog/ESP8266_PWM/issues/2)
+3. Add examples [SAMD21 multiFileProject](examples/SAMD21/multiFileProject) and [SAMD51 multiFileProject](examples/SAMD51/multiFileProject)to demo for multiple-file project
+4. Improve accuracy by using `double`, instead of `uint32_t` for `dutycycle`, `period`. Check [Change Duty Cycle #1](https://github.com/khoih-prog/ESP8266_PWM/issues/1#issuecomment-1024969658)
+5. Optimize library code by using `reference-passing` instead of `value-passing`
+6. Add support to many more boards, such as `SAMD21E1xA`, `SAMD21G1xA` and`SAMD21J1xA`
+7. Update examples accordingly
+8. Update `Packages' Patches`
 
 ### Releases v1.1.0
 

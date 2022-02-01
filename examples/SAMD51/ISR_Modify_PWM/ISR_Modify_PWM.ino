@@ -22,10 +22,14 @@
 // Don't define _PWM_LOGLEVEL_ > 0. Only for special ISR debugging only. Can hang the system.
 #define _PWM_LOGLEVEL_                4
 
-#define USING_MICROS_RESOLUTION       true    //false 
+#define USING_MICROS_RESOLUTION       true    //false
+
+// Default is true, uncomment to false
+//#define CHANGING_PWM_END_OF_CYCLE     false
 
 #define MAX_SAMD_PWM_FREQ            1000
 
+// To be included only in main(), .ino with setup() to avoid `Multiple Definitions` Linker Error
 #include "SAMD_Slow_PWM.h"
 
 #define LED_OFF             LOW
@@ -76,14 +80,14 @@ double PWM_Freq1   = 1.0f;
 double PWM_Freq2   = 2.0f;
 
 // You can assign any interval for any timer here, in microseconds
-uint32_t PWM_Period1 = 1000000 / PWM_Freq1;
+double PWM_Period1 = 1000000.0 / PWM_Freq1;
 // You can assign any interval for any timer here, in microseconds
-uint32_t PWM_Period2 = 1000000 / PWM_Freq2;
+double PWM_Period2 = 1000000.0 / PWM_Freq2;
 
 // You can assign any duty_cycle for any PWM here, from 0-100
-uint32_t PWM_DutyCycle1  = 10;
+double PWM_DutyCycle1  = 50.0;
 // You can assign any duty_cycle for any PWM here, from 0-100
-uint32_t PWM_DutyCycle2  = 90;
+double PWM_DutyCycle2  = 90.0;
 
 // Channel number used to identify associated channel
 int channelNum;
