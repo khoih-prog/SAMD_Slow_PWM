@@ -51,7 +51,7 @@
   #define LED_RED           3
 #endif
 
-#define HW_TIMER_INTERVAL_US      30L
+#define HW_TIMER_INTERVAL_US      20L
 
 uint64_t startMicros = 0;
 

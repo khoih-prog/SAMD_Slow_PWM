@@ -443,7 +443,7 @@ void setup()
   #define LED_RED           3
 #endif
 
-#define HW_TIMER_INTERVAL_US      30L
+#define HW_TIMER_INTERVAL_US      20L
 
 uint64_t startMicros = 0;
 
@@ -1024,57 +1024,57 @@ The following is the sample terminal output when running example [ISR_16_PWMs_Ar
 ```
 Starting ISR_16_PWMs_Array_Complex on ITSYBITSY_M4
 SAMD_Slow_PWM v1.2.1
-Starting ITimer OK, micros() = 2970191
-Channel : 0	    Period : 1000000		OnTime : 50000	Start_Time : 2970476
-Channel : 1	    Period : 500000		OnTime : 50000	Start_Time : 2970897
-Channel : 2	    Period : 333333		OnTime : 66666	Start_Time : 2971268
-Channel : 3	    Period : 250000		OnTime : 75000	Start_Time : 2971697
-Channel : 4	    Period : 200000		OnTime : 80000	Start_Time : 2972068
-Channel : 5	    Period : 166666		OnTime : 74999	Start_Time : 2972445
-Channel : 6	    Period : 142857		OnTime : 71428	Start_Time : 2972868
-Channel : 7	    Period : 125000		OnTime : 68750	Start_Time : 2973239
-Channel : 8	    Period : 111111		OnTime : 66666	Start_Time : 2973659
-Channel : 9	    Period : 100000		OnTime : 65000	Start_Time : 2974039
-Channel : 10	    Period : 66666		OnTime : 46666	Start_Time : 2974410
-Channel : 11	    Period : 50000		OnTime : 37500	Start_Time : 2974836
-Channel : 12	    Period : 40000		OnTime : 32000	Start_Time : 2975210
-Channel : 13	    Period : 33333		OnTime : 28333	Start_Time : 2975630
-Channel : 14	    Period : 25000		OnTime : 22500	Start_Time : 2976007
-Channel : 15	    Period : 20000		OnTime : 19000	Start_Time : 2976381
-SimpleTimer (ms): 2000, us : 12976808, Dus : 10006390
-PWM Channel : 0, programmed Period (us): 1000000.00, actual : 1000020, programmed DutyCycle : 5.00, actual : 5.00
-PWM Channel : 1, programmed Period (us): 500000.00, actual : 500010, programmed DutyCycle : 10.00, actual : 10.00
-PWM Channel : 2, programmed Period (us): 333333.34, actual : 333360, programmed DutyCycle : 20.00, actual : 20.00
-PWM Channel : 3, programmed Period (us): 250000.00, actual : 250020, programmed DutyCycle : 30.00, actual : 30.00
-PWM Channel : 4, programmed Period (us): 200000.00, actual : 200010, programmed DutyCycle : 40.00, actual : 39.99
+Starting ITimer OK, micros() = 3830244
+Channel : 0	    Period : 1000000		OnTime : 50000	Start_Time : 3830538
+Channel : 1	    Period : 500000		OnTime : 50000	Start_Time : 3830903
+Channel : 2	    Period : 333333		OnTime : 66666	Start_Time : 3831277
+Channel : 3	    Period : 250000		OnTime : 75000	Start_Time : 3831708
+Channel : 4	    Period : 200000		OnTime : 80000	Start_Time : 3832077
+Channel : 5	    Period : 166666		OnTime : 74999	Start_Time : 3832451
+Channel : 6	    Period : 142857		OnTime : 71428	Start_Time : 3832874
+Channel : 7	    Period : 125000		OnTime : 68750	Start_Time : 3833251
+Channel : 8	    Period : 111111		OnTime : 66666	Start_Time : 3833671
+Channel : 9	    Period : 100000		OnTime : 65000	Start_Time : 3834049
+Channel : 10	    Period : 66666		OnTime : 46666	Start_Time : 3834419
+Channel : 11	    Period : 50000		OnTime : 37500	Start_Time : 3834849
+Channel : 12	    Period : 40000		OnTime : 32000	Start_Time : 3835219
+Channel : 13	    Period : 33333		OnTime : 28333	Start_Time : 3835639
+Channel : 14	    Period : 25000		OnTime : 22500	Start_Time : 3836016
+Channel : 15	    Period : 20000		OnTime : 19000	Start_Time : 3836393
+SimpleTimer (ms): 2000, us : 13836817, Dus : 10006340
+PWM Channel : 0, programmed Period (us): 1000000.00, actual : 1000000, programmed DutyCycle : 5.00, actual : 5.00
+PWM Channel : 1, programmed Period (us): 500000.00, actual : 500000, programmed DutyCycle : 10.00, actual : 10.00
+PWM Channel : 2, programmed Period (us): 333333.34, actual : 333340, programmed DutyCycle : 20.00, actual : 20.00
+PWM Channel : 3, programmed Period (us): 250000.00, actual : 250000, programmed DutyCycle : 30.00, actual : 30.00
+PWM Channel : 4, programmed Period (us): 200000.00, actual : 200000, programmed DutyCycle : 40.00, actual : 40.00
 PWM Channel : 5, programmed Period (us): 166666.67, actual : 166679, programmed DutyCycle : 45.00, actual : 44.98
-PWM Channel : 6, programmed Period (us): 142857.14, actual : 142860, programmed DutyCycle : 50.00, actual : 49.98
-PWM Channel : 7, programmed Period (us): 125000.00, actual : 125010, programmed DutyCycle : 55.00, actual : 54.98
+PWM Channel : 6, programmed Period (us): 142857.14, actual : 142860, programmed DutyCycle : 50.00, actual : 49.99
+PWM Channel : 7, programmed Period (us): 125000.00, actual : 125000, programmed DutyCycle : 55.00, actual : 54.99
 PWM Channel : 8, programmed Period (us): 111111.11, actual : 111120, programmed DutyCycle : 60.00, actual : 59.99
-PWM Channel : 9, programmed Period (us): 100000.00, actual : 100019, programmed DutyCycle : 65.00, actual : 64.97
-PWM Channel : 10, programmed Period (us): 66666.66, actual : 66690, programmed DutyCycle : 70.00, actual : 69.95
-PWM Channel : 11, programmed Period (us): 50000.00, actual : 50010, programmed DutyCycle : 75.00, actual : 74.99
-PWM Channel : 12, programmed Period (us): 40000.00, actual : 40019, programmed DutyCycle : 80.00, actual : 79.91
-PWM Channel : 13, programmed Period (us): 33333.33, actual : 33359, programmed DutyCycle : 85.00, actual : 84.89
-PWM Channel : 14, programmed Period (us): 25000.00, actual : 25020, programmed DutyCycle : 90.00, actual : 89.93
-PWM Channel : 15, programmed Period (us): 20000.00, actual : 20010, programmed DutyCycle : 95.00, actual : 94.90
-SimpleTimer (ms): 2000, us : 22988101, Dus : 10011293
-PWM Channel : 0, programmed Period (us): 1000000.00, actual : 1000020, programmed DutyCycle : 5.00, actual : 5.00
-PWM Channel : 1, programmed Period (us): 500000.00, actual : 500010, programmed DutyCycle : 10.00, actual : 10.00
-PWM Channel : 2, programmed Period (us): 333333.34, actual : 333360, programmed DutyCycle : 20.00, actual : 20.00
-PWM Channel : 3, programmed Period (us): 250000.00, actual : 250020, programmed DutyCycle : 30.00, actual : 30.00
-PWM Channel : 4, programmed Period (us): 200000.00, actual : 200010, programmed DutyCycle : 40.00, actual : 39.99
+PWM Channel : 9, programmed Period (us): 100000.00, actual : 99999, programmed DutyCycle : 65.00, actual : 65.00
+PWM Channel : 10, programmed Period (us): 66666.66, actual : 66679, programmed DutyCycle : 70.00, actual : 69.98
+PWM Channel : 11, programmed Period (us): 50000.00, actual : 50000, programmed DutyCycle : 75.00, actual : 75.00
+PWM Channel : 12, programmed Period (us): 40000.00, actual : 40000, programmed DutyCycle : 80.00, actual : 80.00
+PWM Channel : 13, programmed Period (us): 33333.33, actual : 33339, programmed DutyCycle : 85.00, actual : 84.95
+PWM Channel : 14, programmed Period (us): 25000.00, actual : 24999, programmed DutyCycle : 90.00, actual : 90.00
+PWM Channel : 15, programmed Period (us): 20000.00, actual : 19999, programmed DutyCycle : 95.00, actual : 95.00
+SimpleTimer (ms): 2000, us : 23848190, Dus : 10011373
+PWM Channel : 0, programmed Period (us): 1000000.00, actual : 1000000, programmed DutyCycle : 5.00, actual : 5.00
+PWM Channel : 1, programmed Period (us): 500000.00, actual : 500000, programmed DutyCycle : 10.00, actual : 10.00
+PWM Channel : 2, programmed Period (us): 333333.34, actual : 333340, programmed DutyCycle : 20.00, actual : 20.00
+PWM Channel : 3, programmed Period (us): 250000.00, actual : 250000, programmed DutyCycle : 30.00, actual : 30.00
+PWM Channel : 4, programmed Period (us): 200000.00, actual : 200000, programmed DutyCycle : 40.00, actual : 40.00
 PWM Channel : 5, programmed Period (us): 166666.67, actual : 166679, programmed DutyCycle : 45.00, actual : 44.98
-PWM Channel : 6, programmed Period (us): 142857.14, actual : 142861, programmed DutyCycle : 50.00, actual : 49.98
-PWM Channel : 7, programmed Period (us): 125000.00, actual : 125010, programmed DutyCycle : 55.00, actual : 54.98
+PWM Channel : 6, programmed Period (us): 142857.14, actual : 142860, programmed DutyCycle : 50.00, actual : 49.99
+PWM Channel : 7, programmed Period (us): 125000.00, actual : 125000, programmed DutyCycle : 55.00, actual : 54.99
 PWM Channel : 8, programmed Period (us): 111111.11, actual : 111120, programmed DutyCycle : 60.00, actual : 59.99
-PWM Channel : 9, programmed Period (us): 100000.00, actual : 100019, programmed DutyCycle : 65.00, actual : 64.97
-PWM Channel : 10, programmed Period (us): 66666.66, actual : 66689, programmed DutyCycle : 70.00, actual : 69.95
-PWM Channel : 11, programmed Period (us): 50000.00, actual : 50010, programmed DutyCycle : 75.00, actual : 74.99
-PWM Channel : 12, programmed Period (us): 40000.00, actual : 40019, programmed DutyCycle : 80.00, actual : 79.91
-PWM Channel : 13, programmed Period (us): 33333.33, actual : 33360, programmed DutyCycle : 85.00, actual : 84.89
-PWM Channel : 14, programmed Period (us): 25000.00, actual : 25020, programmed DutyCycle : 90.00, actual : 89.93
-PWM Channel : 15, programmed Period (us): 20000.00, actual : 20009, programmed DutyCycle : 95.00, actual : 94.90
+PWM Channel : 9, programmed Period (us): 100000.00, actual : 99999, programmed DutyCycle : 65.00, actual : 65.00
+PWM Channel : 10, programmed Period (us): 66666.66, actual : 66679, programmed DutyCycle : 70.00, actual : 69.98
+PWM Channel : 11, programmed Period (us): 50000.00, actual : 50000, programmed DutyCycle : 75.00, actual : 75.00
+PWM Channel : 12, programmed Period (us): 40000.00, actual : 40000, programmed DutyCycle : 80.00, actual : 80.00
+PWM Channel : 13, programmed Period (us): 33333.33, actual : 33339, programmed DutyCycle : 85.00, actual : 84.94
+PWM Channel : 14, programmed Period (us): 25000.00, actual : 24999, programmed DutyCycle : 90.00, actual : 90.01
+PWM Channel : 15, programmed Period (us): 20000.00, actual : 20000, programmed DutyCycle : 95.00, actual : 95.00
 ```
 
 ---
