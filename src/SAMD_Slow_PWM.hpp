@@ -12,13 +12,14 @@
   Therefore, their executions are not blocked by bad-behaving functions / tasks.
   This important feature is absolutely necessary for mission-critical tasks.
 
-  Version: 1.2.0
+  Version: 1.2.1
 
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
   1.0.0   K.Hoang      01/10/2021 Initial coding for SAMD21/SAMD51 boards
   1.1.0   K Hoang      10/11/2021 Add functions to modify PWM settings on-the-fly
   1.2.0   K Hoang      31/01/2022 Fix multiple-definitions linker error. Improve accuracy. Change DutyCycle update
+  1.2.1   K Hoang      01/02/2022 Use float for DutyCycle and Freq, uint32_t for period
 *****************************************************************************************************************************/
 
 #pragma once
@@ -125,13 +126,13 @@
 #include "Arduino.h"
 
 #ifndef SAMD_SLOW_PWM_VERSION
-  #define SAMD_SLOW_PWM_VERSION             "SAMD_Slow_PWM v1.2.0"
+  #define SAMD_SLOW_PWM_VERSION             "SAMD_Slow_PWM v1.2.1"
   
   #define SAMD_SLOW_PWM_VERSION_MAJOR       1
   #define SAMD_SLOW_PWM_VERSION_MINOR       2
-  #define SAMD_SLOW_PWM_VERSION_PATCH       0
+  #define SAMD_SLOW_PWM_VERSION_PATCH       1
 
-  #define SAMD_SLOW_PWM_VERSION_INT         1002000
+  #define SAMD_SLOW_PWM_VERSION_INT         1002001
 #endif
 
 #include "TimerInterrupt_Generic_Debug.h"
@@ -385,7 +386,7 @@ class SAMDTimerInterrupt
     float           _frequency;       // Timer frequency
     //uint32_t        _timerCount;      // count to activate timer
     
-    float   _period;
+    float           _period;
     int             _prescaler;
     int             _compareValue;
 

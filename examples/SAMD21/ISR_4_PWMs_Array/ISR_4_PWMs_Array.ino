@@ -89,19 +89,19 @@ uint32_t PWM_Pin[] =
 };
 
 // You can assign any interval for any timer here, in microseconds
-double PWM_Period[] =
+uint32_t PWM_Period[] =
 {
-  1000000.0,   500000.0,   333333.333,    50000.0
+  1000000,   500000,   250000,   200000
 };
 
 // You can assign any interval for any timer here, in Hz
-double PWM_Freq[] =
+float PWM_Freq[] =
 {
-  1.0,  2.0,  3.0,  4.0
+  1.0,  2.0,  4.0,  5.0
 };
 
 // You can assign any interval for any timer here, in milliseconds
-double PWM_DutyCycle[] =
+float PWM_DutyCycle[] =
 {
    40.00, 45.00, 50.00, 55.00
 };
@@ -160,7 +160,7 @@ void setup()
   // You can use up to 16 timer for each ISR_PWM
   for (uint16_t i = 0; i < NUMBER_ISR_PWMS; i++)
   {
-    //void setPWM(uint32_t pin, uint32_t frequency, uint32_t dutycycle
+    //void setPWM(uint32_t pin, float frequency, float dutycycle
     // , timer_callback_p StartCallback = nullptr, timer_callback_p StopCallback = nullptr)
 
 #if USING_PWM_FREQUENCY

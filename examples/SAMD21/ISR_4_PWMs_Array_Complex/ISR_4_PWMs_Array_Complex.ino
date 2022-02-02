@@ -110,12 +110,12 @@ typedef struct
   irqCallback   irqCallbackStopFunc;
 
 #if USING_PWM_FREQUENCY  
-  double        PWM_Freq;
+  float         PWM_Freq;
 #else  
-  double        PWM_Period;
+  uint32_t      PWM_Period;
 #endif
   
-  double        PWM_DutyCycle;
+  float         PWM_DutyCycle;
   
   uint64_t      deltaMicrosStart;
   uint64_t      previousMicrosStart;
@@ -148,19 +148,19 @@ uint32_t PWM_Pin[] =
 };
 
 // You can assign any interval for any timer here, in microseconds
-double PWM_Period[] =
+uint32_t PWM_Period[] =
 {
-  1000000.0,   500000.0,   333333.333,    50000.0
+  1000000,   500000,   250000,   200000
 };
 
 // You can assign any interval for any timer here, in Hz
-double PWM_Freq[] =
+float PWM_Freq[] =
 {
-  1.0,  2.0,  3.0,  4.0
+  1.0,  2.0,  4.0,  5.0
 };
 
 // You can assign any interval for any timer here, in milliseconds
-double PWM_DutyCycle[] =
+float PWM_DutyCycle[] =
 {
    40.00, 45.00, 50.00, 55.00
 };
@@ -243,8 +243,8 @@ void doingSomethingStop3()
     // pin, irqCallbackStartFunc, irqCallbackStopFunc, PWM_Freq, PWM_DutyCycle, deltaMicrosStart, previousMicrosStart, deltaMicrosStop, previousMicrosStop
     { LED_BUILTIN,  doingSomethingStart0,   doingSomethingStop0,    1.0,   5.0, 0, 0, 0, 0 },
     { PIN_D2,       doingSomethingStart1,   doingSomethingStop1,    2.0,  10.0, 0, 0, 0, 0 },
-    { PIN_D7,       doingSomethingStart2,   doingSomethingStop2,   15.0,  20.0, 0, 0, 0, 0 },
-    { PIN_D8,       doingSomethingStart3,   doingSomethingStop3,   20.0,  30.0, 0, 0, 0, 0 },
+    { PIN_D7,       doingSomethingStart2,   doingSomethingStop2,    4.0,  20.0, 0, 0, 0, 0 },
+    { PIN_D8,       doingSomethingStart3,   doingSomethingStop3,    5.0,  30.0, 0, 0, 0, 0 },
   };
   
   #else   // #if USING_PWM_FREQUENCY
@@ -252,10 +252,10 @@ void doingSomethingStop3()
   ISR_PWM_Data curISR_PWM_Data[] =
   {
     // pin, irqCallbackStartFunc, irqCallbackStopFunc, PWM_Period, PWM_DutyCycle, deltaMicrosStart, previousMicrosStart, deltaMicrosStop, previousMicrosStop
-    { LED_BUILTIN,  doingSomethingStart0,    doingSomethingStop0,   1000000.0,    5.0, 0, 0, 0, 0 },
-    { PIN_D2,       doingSomethingStart5,    doingSomethingStop1,    166666.667, 10.0, 0, 0, 0, 0 },
-    { PIN_D7,       doingSomethingStart2,    doingSomethingStop2,     66666.667, 20.0, 0, 0, 0, 0 },
-    { PIN_D8,       doingSomethingStart3,    doingSomethingStop3,     50000.0,   30.0, 0, 0, 0, 0 },
+    { LED_BUILTIN,  doingSomethingStart0,    doingSomethingStop0,   1000000,  5.0, 0, 0, 0, 0 },
+    { PIN_D2,       doingSomethingStart5,    doingSomethingStop1,    500000, 10.0, 0, 0, 0, 0 },
+    { PIN_D7,       doingSomethingStart2,    doingSomethingStop2,    250000, 20.0, 0, 0, 0, 0 },
+    { PIN_D8,       doingSomethingStart3,    doingSomethingStop3,    200000, 30.0, 0, 0, 0, 0 },
   };
   
   #endif  // #if USING_PWM_FREQUENCY

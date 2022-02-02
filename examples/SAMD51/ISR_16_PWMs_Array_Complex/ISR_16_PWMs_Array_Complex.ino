@@ -107,12 +107,12 @@ typedef struct
   irqCallback   irqCallbackStopFunc;
 
 #if USING_PWM_FREQUENCY  
-  double        PWM_Freq;
+  float         PWM_Freq;
 #else  
-  double        PWM_Period;
+  uint32_t      PWM_Period;
 #endif
   
-  double        PWM_DutyCycle;
+  float         PWM_DutyCycle;
   
   uint64_t      deltaMicrosStart;
   uint64_t      previousMicrosStart;
@@ -146,21 +146,21 @@ uint32_t PWM_Pin[] =
 };
 
 // You can assign any interval for any timer here, in microseconds
-double PWM_Period[] =
+uint32_t PWM_Period[] =
 {
-  1000000.0,     500000.0,   333333.333,   250000.0,   200000.0,   166666.666,   142857.143,   125000.0,
-   111111.111,   100000.0,    66666.666,    50000.0,    40000.0,    33333.333,    25000.0,      20000.0
+  10000000,    5000000,   333333,   250000,   200000,   166667,   142857,   125000,
+    111111,    100000,     66667,    50000,    40000,    33333,    25000,    20000
 };
 
 // You can assign any interval for any timer here, in Hz
-double PWM_Freq[] =
+float PWM_Freq[] =
 {
   1.0f,  2.0f,  3.0f,  4.0f,  5.0f,  6.0f,  7.0f,  8.0f,
   9.0f, 10.0f, 15.0f, 20.0f, 25.0f, 30.0f, 40.0f, 50.0f
 };
 
 // You can assign any interval for any timer here, in milliseconds
-double PWM_DutyCycle[] =
+float PWM_DutyCycle[] =
 {
    5.00, 10.00, 20.00, 30.00, 40.00, 45.00, 50.00, 55.00,
   60.00, 65.00, 70.00, 75.00, 80.00, 85.00, 90.00, 95.00
@@ -383,22 +383,22 @@ void doingSomethingStop15()
   ISR_PWM_Data curISR_PWM_Data[] =
   {
     // pin, irqCallbackStartFunc, irqCallbackStopFunc, PWM_Period, PWM_DutyCycle, deltaMicrosStart, previousMicrosStart, deltaMicrosStop, previousMicrosStop
-    { LED_BUILTIN,  doingSomethingStart0,     doingSomethingStop0,   1000000.0,    5.0, 0, 0, 0, 0 },
-    { LED_BLUE,     doingSomethingStart1,     doingSomethingStop1,    500000.0,   10.0, 0, 0, 0, 0 },
-    { LED_RED,      doingSomethingStart2,     doingSomethingStop2,    333333.333, 20.0, 0, 0, 0, 0 },
-    { PIN_D0,       doingSomethingStart3,     doingSomethingStop3,    250000.0,   30.0, 0, 0, 0, 0 },
-    { PIN_D1,       doingSomethingStart4,     doingSomethingStop4,    200000.0,   40.0, 0, 0, 0, 0 },
-    { PIN_D2,       doingSomethingStart5,     doingSomethingStop5,    166667.667, 45.0, 0, 0, 0, 0 },
-    { PIN_D3,       doingSomethingStart6,     doingSomethingStop6,    142857.143, 50.0, 0, 0, 0, 0 },
-    { PIN_D4,       doingSomethingStart7,     doingSomethingStop7,    125000.0,   55.0, 0, 0, 0, 0 },
-    { PIN_D5,       doingSomethingStart8,     doingSomethingStop8,    111111.111, 60.0, 0, 0, 0, 0 },
-    { PIN_D6,       doingSomethingStart9,     doingSomethingStop9,    100000.0,   65.0, 0, 0, 0, 0 },
-    { PIN_D7,       doingSomethingStart10,    doingSomethingStop10,    66666.667, 70.0, 0, 0, 0, 0 },
-    { PIN_D8,       doingSomethingStart11,    doingSomethingStop11,    50000.0,   75.0, 0, 0, 0, 0 },
-    { PIN_D9,       doingSomethingStart12,    doingSomethingStop12,    40000.0,   80.0, 0, 0, 0, 0 },
-    { PIN_D10,      doingSomethingStart13,    doingSomethingStop13,    33333.333, 85.0, 0, 0, 0, 0 },
-    { PIN_D11,      doingSomethingStart14,    doingSomethingStop14,    25000.0,   90.0, 0, 0, 0, 0 },
-    { PIN_D12,      doingSomethingStart15,    doingSomethingStop15,    20000.0,   95.0, 0, 0, 0, 0 }
+    { LED_BUILTIN,  doingSomethingStart0,     doingSomethingStop0,   1000000, 5.0, 0, 0, 0, 0 },
+    { LED_BLUE,     doingSomethingStart1,     doingSomethingStop1,    500000, 10.0, 0, 0, 0, 0 },
+    { LED_RED,      doingSomethingStart2,     doingSomethingStop2,    333333, 20.0, 0, 0, 0, 0 },
+    { PIN_D0,       doingSomethingStart3,     doingSomethingStop3,    250000, 30.0, 0, 0, 0, 0 },
+    { PIN_D1,       doingSomethingStart4,     doingSomethingStop4,    200000, 40.0, 0, 0, 0, 0 },
+    { PIN_D2,       doingSomethingStart5,     doingSomethingStop5,    166667, 45.0, 0, 0, 0, 0 },
+    { PIN_D3,       doingSomethingStart6,     doingSomethingStop6,    142857, 50.0, 0, 0, 0, 0 },
+    { PIN_D4,       doingSomethingStart7,     doingSomethingStop7,    125000, 55.0, 0, 0, 0, 0 },
+    { PIN_D5,       doingSomethingStart8,     doingSomethingStop8,    111111, 60.0, 0, 0, 0, 0 },
+    { PIN_D6,       doingSomethingStart9,     doingSomethingStop9,    100000, 65.0, 0, 0, 0, 0 },
+    { PIN_D7,       doingSomethingStart10,    doingSomethingStop10,    66667, 70.0, 0, 0, 0, 0 },
+    { PIN_D8,       doingSomethingStart11,    doingSomethingStop11,    50000, 75.0, 0, 0, 0, 0 },
+    { PIN_D9,       doingSomethingStart12,    doingSomethingStop12,    40000, 80.0, 0, 0, 0, 0 },
+    { PIN_D10,      doingSomethingStart13,    doingSomethingStop13,    33333, 85.0, 0, 0, 0, 0 },
+    { PIN_D11,      doingSomethingStart14,    doingSomethingStop14,    25000, 90.0, 0, 0, 0, 0 },
+    { PIN_D12,      doingSomethingStart15,    doingSomethingStop15,    20000, 95.0, 0, 0, 0, 0 }
   };
   
   #endif  // #if USING_PWM_FREQUENCY
@@ -536,7 +536,7 @@ void setup()
     curISR_PWM_Data[i].previousMicrosStart = startMicros;
     //ISR_PWM.setInterval(curISR_PWM_Data[i].PWM_Period, curISR_PWM_Data[i].irqCallbackStartFunc);
 
-    //void setPWM(uint32_t pin, uint32_t frequency, uint32_t dutycycle
+    //void setPWM(uint32_t pin, float frequency, float dutycycle
     // , timer_callback_p StartCallback = nullptr, timer_callback_p StopCallback = nullptr)
 
   #if USING_PWM_FREQUENCY

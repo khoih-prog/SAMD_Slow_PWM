@@ -12,13 +12,14 @@
   Therefore, their executions are not blocked by bad-behaving functions / tasks.
   This important feature is absolutely necessary for mission-critical tasks.
 
-  Version: 1.2.0
+  Version: 1.2.1
 
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
   1.0.0   K.Hoang      01/10/2021 Initial coding for SAMD21/SAMD51 boards
   1.1.0   K Hoang      10/11/2021 Add functions to modify PWM settings on-the-fly
   1.2.0   K Hoang      31/01/2022 Fix multiple-definitions linker error. Improve accuracy. Change DutyCycle update
+  1.2.1   K Hoang      01/02/2022 Use float for DutyCycle and Freq, uint32_t for period
 *****************************************************************************************************************************/
 
 #pragma once
@@ -51,13 +52,13 @@
 #include "Arduino.h"
 
 #ifndef SAMD_SLOW_PWM_VERSION
-  #define SAMD_SLOW_PWM_VERSION             "SAMD_Slow_PWM v1.2.0"
+  #define SAMD_SLOW_PWM_VERSION             "SAMD_Slow_PWM v1.2.1"
   
   #define SAMD_SLOW_PWM_VERSION_MAJOR       1
   #define SAMD_SLOW_PWM_VERSION_MINOR       2
-  #define SAMD_SLOW_PWM_VERSION_PATCH       0
+  #define SAMD_SLOW_PWM_VERSION_PATCH       1
 
-  #define SAMD_SLOW_PWM_VERSION_INT         1002000
+  #define SAMD_SLOW_PWM_VERSION_INT         1002001
 #endif
 
 #ifndef _PWM_LOGLEVEL_
@@ -114,19 +115,19 @@ class SAMD_Slow_PWM_ISR
     //////////////////////////////////////////////////////////////////
     // PWM
     // Return the channelNum if OK, -1 if error
-    int setPWM(const uint32_t& pin, const double& frequency, const double& dutycycle, timer_callback StartCallback = nullptr, 
+    int setPWM(const uint32_t& pin, const float& frequency, const float& dutycycle, timer_callback StartCallback = nullptr, 
                 timer_callback StopCallback = nullptr)
     {
-      double period = 0.0;
+      uint32_t period = 0;
       
       if ( ( frequency > 0.0 ) && ( frequency <= 1000.0 ) )
       {
 #if USING_MICROS_RESOLUTION
       // period in us
-      period = 1000000.0f / frequency;
+      period = (uint32_t) (1000000.0f / frequency);
 #else    
       // period in ms
-      period = 1000.0f / frequency;
+      period = (uint32_t) (1000.0f / frequency);
 #endif
       }
       else
@@ -141,8 +142,8 @@ class SAMD_Slow_PWM_ISR
 
     // period in us
     // Return the channelNum if OK, -1 if error
-    int setPWM_Period(const uint32_t& pin, const double& period, const double& dutycycle, timer_callback StartCallback = nullptr,
-                       timer_callback StopCallback = nullptr)  
+    int setPWM_Period(const uint32_t& pin, const uint32_t& period, const float& dutycycle, 
+                      timer_callback StartCallback = nullptr, timer_callback StopCallback = nullptr)  
     {     
       return setupPWMChannel(pin, period, dutycycle, (void *) StartCallback, (void *) StopCallback);      
     } 
@@ -151,18 +152,18 @@ class SAMD_Slow_PWM_ISR
     
     // low level function to modify a PWM channel
     // returns the true on success or false on failure
-    bool modifyPWMChannel(const uint8_t& channelNum, const uint32_t& pin, const double& frequency, const double& dutycycle)
+    bool modifyPWMChannel(const uint8_t& channelNum, const uint32_t& pin, const float& frequency, const float& dutycycle)
     {
-      double period = 0.0;
+      uint32_t period = 0;
       
       if ( ( frequency > 0.0 ) && ( frequency <= 1000.0 ) )
       {
 #if USING_MICROS_RESOLUTION
       // period in us
-      period = 1000000.0f / frequency;
+      period = (uint32_t) (1000000.0f / frequency);
 #else    
       // period in ms
-      period = 1000.0f / frequency;
+      period = (uint32_t) (1000.0f / frequency);
 #endif
       }
       else
@@ -177,7 +178,7 @@ class SAMD_Slow_PWM_ISR
     //////////////////////////////////////////////////////////////////
     
     //period in us
-    bool modifyPWMChannel_Period(const uint8_t& channelNum, const uint32_t& pin, const double& period, const double& dutycycle);
+    bool modifyPWMChannel_Period(const uint8_t& channelNum, const uint32_t& pin, const uint32_t& period, const float& dutycycle);
     
     //////////////////////////////////////////////////////////////////
 
@@ -222,7 +223,7 @@ class SAMD_Slow_PWM_ISR
     // low level function to initialize and enable a new PWM channel
     // returns the PWM channel number (channelNum) on success or
     // -1 on failure (f == NULL) or no free PWM channels 
-    int setupPWMChannel(const uint32_t& pin, const double& period, const double& dutycycle, void* cbStartFunc = nullptr, void* cbStopFunc = nullptr);
+    int setupPWMChannel(const uint32_t& pin, const uint32_t& period, const float& dutycycle, void* cbStartFunc = nullptr, void* cbStopFunc = nullptr);
 
     // find the first available slot
     int findFirstFreeSlot();
@@ -235,7 +236,7 @@ class SAMD_Slow_PWM_ISR
       ///////////////////////////////////
       
       uint64_t      prevTime;           // value returned by the micros() or millis() function in the previous run() call
-      double        period;             // period value, in us / ms
+      uint32_t      period;             // period value, in us / ms
       uint32_t      onTime;             // onTime value, ( period * dutyCycle / 100 ) us  / ms
       
       void*         callbackStart;      // pointer to the callback function when PWM pulse starts (HIGH)
@@ -250,8 +251,9 @@ class SAMD_Slow_PWM_ISR
       bool          enabled;            // true if enabled
       
       // New from v1.2.0     
-      double        newPeriod;          // period value, in us / ms
-      double        newDutyCycle;       // from 0.00 to 100.00, double precision
+      uint32_t      newPeriod;          // period value, in us / ms
+      uint32_t      newOnTime;          // onTime value, ( period * dutyCycle / 100 ) us  / ms
+      float         newDutyCycle;       // from 0.00 to 100.00, float precision
     } PWM_t;
 
     volatile PWM_t PWM[MAX_NUMBER_CHANNELS];
