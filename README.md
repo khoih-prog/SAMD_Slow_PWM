@@ -202,7 +202,7 @@ Another way to install is to:
 
 1. Install [VS Code](https://code.visualstudio.com/)
 2. Install [PlatformIO](https://platformio.org/platformio-ide)
-3. Install [**SAMD_Slow_PWM** library](https://platformio.org/lib/show/12907/SAMD_Slow_PWM) by using [Library Manager](https://platformio.org/lib/show/12907/SAMD_Slow_PWM/installation). Search for **SAMD_Slow_PWM** in [Platform.io Author's Libraries](https://platformio.org/lib/search?query=author:%22Khoi%20Hoang%22)
+3. Install [**SAMD_Slow_PWM** library](https://registry.platformio.org/libraries/khoih-prog/SAMD_Slow_PWM) by using [Library Manager](https://registry.platformio.org/libraries/khoih-prog/SAMD_Slow_PWM/installation). Search for **SAMD_Slow_PWM** in [Platform.io Author's Libraries](https://platformio.org/lib/search?query=author:%22Khoi%20Hoang%22)
 4. Use included [platformio.ini](platformio/platformio.ini) file from examples to ensure that all dependent libraries will installed automatically. Please visit documentation for the other options and examples at [Project Configuration File](https://docs.platformio.org/page/projectconf.html)
 
 ---
@@ -325,7 +325,7 @@ in many files. But be sure to use the following `.h` file **in just 1 `.h`, `.cp
 #include "SAMD_Slow_PWM.h"           //https://github.com/khoih-prog/SAMD_Slow_PWM
 ```
 
-Check the new [**multiFileProject** example](examples/multiFileProject) for a `HOWTO` demo.
+Check the new [**SAMD21 multiFileProject** example](examples/SAMD21/multiFileProject) or [**SAMD51 multiFileProject** example](examples/SAMD51/multiFileProject) for a `HOWTO` demo.
 
 Have a look at the discussion in [Different behaviour using the src_cpp or src_h lib #80](https://github.com/khoih-prog/ESPAsync_WiFiManager/discussions/80)
 
