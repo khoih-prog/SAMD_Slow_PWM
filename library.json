@@ -1,6 +1,6 @@
 {
   "name": "SAMD_Slow_PWM",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "keywords": "timing, device, control, timer, interrupt, hardware, isr, isr-based, hardware-timer, isr-timer, isr-based-timer, mission-critical, accuracy, precise, non-blocking, samd, samd21, samd51, nano-33-iot",
   "description": "This library enables you to use Hardware Timers on SAMD21/SAMD51 boards to create and output PWM to pins. These PWM channels, using SAMD21/SAMD51 Hardware Timers, still work even if other functions are blocking. Moreover, they are much more precise (certainly depending on clock frequency accuracy) than other software timers using millis() or micros(). That's mandatory if you need to measure some data requiring better accuracy. It now supports 16 ISR-based Timers, while consuming only 1 Hardware Timer. Timers interval is very long (ulong millisecs). The most important feature is they're ISR-based Timers. Therefore, their executions are not blocked by bad-behaving functions or tasks. This important feature is absolutely necessary for mission-critical tasks. Max PWM frequency is limited at 1000Hz. Now you can change the PWM settings on-the-fly",
   "authors":

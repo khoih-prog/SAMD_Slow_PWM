@@ -421,7 +421,7 @@ The following is the sample terminal output when running example [ISR_16_PWMs_Ar
 
 ```
 Starting ISR_4_PWMs_Array_Complex on SAMD_NANO_33_IOT
-SAMD_Slow_PWM v1.2.2
+SAMD_Slow_PWM v1.2.3
 Starting ITimer OK, micros() = 2750362
 Channel : 0	    Period : 1000000		OnTime : 50000	Start_Time : 2750883
 Channel : 1	    Period : 500000		OnTime : 50000	Start_Time : 2751343
@@ -458,7 +458,7 @@ The following is the sample terminal output when running example [ISR_16_PWMs_Ar
 
 ```
 Starting ISR_16_PWMs_Array_Complex on ITSYBITSY_M4
-SAMD_Slow_PWM v1.2.2
+SAMD_Slow_PWM v1.2.3
 Starting ITimer OK, micros() = 3830244
 Channel : 0	    Period : 1000000		OnTime : 50000	Start_Time : 3830538
 Channel : 1	    Period : 500000		OnTime : 50000	Start_Time : 3830903
@@ -521,7 +521,7 @@ The following is the sample terminal output when running example [ISR_4_PWMs_Arr
 
 ```
 Starting ISR_16_PWMs_Array_Complex on SEEED_XIAO_M0
-SAMD_Slow_PWM v1.2.2
+SAMD_Slow_PWM v1.2.3
 Starting ITimer OK, micros() = 2681651
 Channel : 0	Period : 1000000		OnTime : 50000	Start_Time : 2682003
 Channel : 1	Period : 500000		OnTime : 50000	Start_Time : 2682003
@@ -547,14 +547,24 @@ The following is the sample terminal output when running example [ISR_Modify_PWM
 
 ```
 Starting ISR_Modify_PWM on SAMD_NANO_33_IOT
-SAMD_Slow_PWM v1.2.2
-Starting ITimer OK, micros() = 3070515
-Using PWM Freq = 1.00, PWM DutyCycle = 50.00
-Channel : 0	    Period : 1000000		OnTime : 500000	Start_Time : 3071411
-Channel : 0	New Period : 500000		OnTime : 450000	Start_Time : 13071416
-Channel : 0	New Period : 1000000		OnTime : 500000	Start_Time : 23071416
-Channel : 0	New Period : 500000		OnTime : 450000	Start_Time : 32571416
-Channel : 0	New Period : 1000000		OnTime : 500000	Start_Time : 43071416
+SAMD_Slow_PWM v1.2.3
+[PWM] SAMDTimerInterrupt: F_CPU (MHz) = 48 , TIMER_HZ = 48
+[PWM] TC3_Timer::startTimer _Timer = 0x 42002c00 , TC3 = 0x 42002c00
+Starting ITimer OK, micros() = 3761339
+Using PWM Freq = 200.00, PWM DutyCycle = 1.00
+Channel : 0	    Period : 5000		OnTime : 50	Start_Time : 3762307
+Channel : 0	    Period : 10000		OnTime : 555	Start_Time : 13762340
+Channel : 0	    Period : 5000		OnTime : 50	Start_Time : 23757340
+Channel : 0	    Period : 10000		OnTime : 555	Start_Time : 33762390
+Channel : 0	    Period : 5000		OnTime : 50	Start_Time : 43757390
+Channel : 0	    Period : 10000		OnTime : 555	Start_Time : 53762390
+Channel : 0	    Period : 5000		OnTime : 50	Start_Time : 63767390
+Channel : 0	    Period : 10000		OnTime : 555	Start_Time : 73767390
+Channel : 0	    Period : 5000		OnTime : 50	Start_Time : 83762390
+Channel : 0	    Period : 10000		OnTime : 555	Start_Time : 93767390
+Channel : 0	    Period : 5000		OnTime : 50	Start_Time : 103762390
+Channel : 0	    Period : 10000		OnTime : 555	Start_Time : 113772440
+Channel : 0	    Period : 5000		OnTime : 50	Start_Time : 123767440
 ```
 
 ---
@@ -565,7 +575,7 @@ The following is the sample terminal output when running example [ISR_Changing_P
 
 ```
 Starting ISR_Changing_PWM on SAMD_NANO_33_IOT
-SAMD_Slow_PWM v1.2.2
+SAMD_Slow_PWM v1.2.3
 Starting ITimer OK, micros() = 2820370
 Using PWM Freq = 1.00, PWM DutyCycle = 50.00
 Channel : 0	    Period : 1000000		OnTime : 500000	Start_Time : 2821335
@@ -591,7 +601,7 @@ The following is the sample terminal output when running example [ISR_Modify_PWM
 
 ```
 Starting ISR_Modify_PWM on ITSYBITSY_M4
-SAMD_Slow_PWM v1.2.2
+SAMD_Slow_PWM v1.2.3
 Starting ITimer OK, micros() = 3320212
 Using PWM Freq = 1.00, PWM DutyCycle = 50.00
 Channel : 0	    Period : 1000000		OnTime : 500000	Start_Time : 3320837
@@ -622,7 +632,7 @@ The following is the sample terminal output when running example [ISR_Changing_P
 
 ```
 Starting ISR_Changing_PWM on ITSYBITSY_M4
-SAMD_Slow_PWM v1.2.2
+SAMD_Slow_PWM v1.2.3
 Starting ITimer OK, micros() = 3660252
 Using PWM Freq = 1.00, PWM DutyCycle = 50.00
 Channel : 0	    Period : 1000000		OnTime : 500000	Start_Time : 3660870
@@ -692,11 +702,14 @@ Submit issues to: [SAMD_Slow_PWM issues](https://github.com/khoih-prog/SAMD_Slow
 
 Many thanks for everyone for bug reporting, new feature suggesting, testing and contributing to the development of this library.
 
-1. [toniMephis](https://github.com/toniMephis) to report issue [missing header #2](https://github.com/khoih-prog/SAMD_Slow_PWM/issues/2) leading to version v1.2.2.
+1. [toniMephis](https://github.com/toniMephis) to report
+
+- issue [missing header #2](https://github.com/khoih-prog/SAMD_Slow_PWM/issues/2) leading to version v1.2.2
+- issues [float precisison of DutyCycle only sometimes working #3](https://github.com/khoih-prog/SAMD_Slow_PWM/issues/3) and [random dropouts #4](https://github.com/khoih-prog/SAMD_Slow_PWM/issues/4) leading to version v1.2.3
 
 <table>
   <tr>
-    <td align="center"><a href="https://github.com/toniMephis"><img src="https://github.com/toniMephis.png" width="100px;" alt="toniMephis"/><br /><sub><b>toniMephis</b></sub></a><br /></td>
+    <td align="center"><a href="https://github.com/toniMephis"><img src="https://github.com/toniMephis.png" width="100px;" alt="toniMephis"/><br /><sub><b>⭐️ toniMephis</b></sub></a><br /></td>
   </tr> 
 </table>
 

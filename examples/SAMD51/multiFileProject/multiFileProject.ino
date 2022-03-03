@@ -14,8 +14,8 @@
   #error This code is designed to run on SAMD51 platform! Please check your Tools->Board setting.
 #endif
 
-#define SAMD_SLOW_PWM_VERSION_MIN_TARGET      "SAMD_Slow_PWM v1.2.1"
-#define SAMD_SLOW_PWM_VERSION_MIN             1002001
+#define SAMD_SLOW_PWM_VERSION_MIN_TARGET      "SAMD_Slow_PWM v1.2.3"
+#define SAMD_SLOW_PWM_VERSION_MIN             1002003
 
 #include "multiFileProject.h"
 
