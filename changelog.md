@@ -12,6 +12,7 @@
 ## Table of Contents
 
 * [Changelog](#changelog)
+  * [Releases v1.2.2](#releases-v122)
   * [Releases v1.2.1](#releases-v121)
   * [Releases v1.2.0](#releases-v120)
   * [Releases v1.1.0](#releases-v110)
@@ -21,6 +22,13 @@
 ---
 
 ## Changelog
+
+### Releases v1.2.2
+
+1. Use correct `PWM_Generic_Debug.h` file. Check [missing header #2](https://github.com/khoih-prog/SAMD_Slow_PWM/issues/2)
+2. Display informational warning only when `_PWM_LOGLEVEL_` > 3
+3. Update `Packages' Patches`
+
 
 ### Releases v1.2.1
 

@@ -12,7 +12,7 @@
   Therefore, their executions are not blocked by bad-behaving functions / tasks.
   This important feature is absolutely necessary for mission-critical tasks.
 
-  Version: 1.2.1
+  Version: 1.2.2
 
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
@@ -20,6 +20,7 @@
   1.1.0   K Hoang      10/11/2021 Add functions to modify PWM settings on-the-fly
   1.2.0   K Hoang      31/01/2022 Fix multiple-definitions linker error. Improve accuracy. Change DutyCycle update
   1.2.1   K Hoang      01/02/2022 Use float for DutyCycle and Freq, uint32_t for period
+  1.2.2   K Hoang      02/03/2022 Use correct PWM_Generic_Debug.h file. Display informational warning when debug level > 3
 *****************************************************************************************************************************/
 
 #pragma once
@@ -51,7 +52,11 @@
   
     #if defined(ARDUINO_QWIIC_MICRO)
       #define BOARD_NAME    "Sparkfun SAMD21_QWIIC_MICRO"
-      #warning BOARD_NAME == Sparkfun SAMD21_QWIIC_MICRO
+      
+      #if (_PWM_LOGLEVEL_ > 3)
+        #warning BOARD_NAME == Sparkfun SAMD21_QWIIC_MICRO
+      #endif
+      
     #elif defined(__SAMD21E15A__)
       #define BOARD_NAME    "__SAMD21E15A__"
     #elif defined(__SAMD21E16A__)
@@ -82,7 +87,10 @@
     
   #endif
   
-  #warning Using SAMD21 Hardware Timer
+  #if (_PWM_LOGLEVEL_ > 3)
+    #warning Using SAMD21 Hardware Timer
+  #endif
+
 #elif ( defined(__SAMD51__) || defined(__SAMD51J20A__) || defined(__SAMD51J19A__) || defined(__SAMD51G19A__) || defined(__SAMD51P19A__) )
   #define TIMER_INTERRUPT_USING_SAMD51      true
    
@@ -90,10 +98,18 @@
   
     #if defined(ARDUINO_SAMD51_THING_PLUS)
       #define BOARD_NAME    "Sparkfun SAMD51_THING_PLUS"
-      #warning BOARD_NAME == Sparkfun SAMD51_THING_PLUS
+      
+      #if (_PWM_LOGLEVEL_ > 3)
+        #warning BOARD_NAME == Sparkfun SAMD51_THING_PLUS
+      #endif
+      
     #elif defined(ARDUINO_SAMD51_MICROMOD)
       #define BOARD_NAME    "Sparkfun SAMD51_MICROMOD"
-      #warning BOARD_NAME == Sparkfun SAMD51_MICROMOD
+      
+      #if (_PWM_LOGLEVEL_ > 3)
+        #warning BOARD_NAME == Sparkfun SAMD51_MICROMOD
+      #endif
+      
     #elif defined(__SAMD51J20A__)
       #define BOARD_NAME    "__SAMD51J20A__"
     #elif defined(__SAMD51J19A__)
@@ -108,7 +124,10 @@
     
   #endif
   
-  #warning Using SAMD51 Hardware Timer
+  #if (_PWM_LOGLEVEL_ > 3)
+    #warning Using SAMD51 Hardware Timer
+  #endif
+  
 #else
   #error Unknown board  
 #endif
@@ -126,16 +145,16 @@
 #include "Arduino.h"
 
 #ifndef SAMD_SLOW_PWM_VERSION
-  #define SAMD_SLOW_PWM_VERSION             "SAMD_Slow_PWM v1.2.1"
+  #define SAMD_SLOW_PWM_VERSION             "SAMD_Slow_PWM v1.2.2"
   
   #define SAMD_SLOW_PWM_VERSION_MAJOR       1
   #define SAMD_SLOW_PWM_VERSION_MINOR       2
-  #define SAMD_SLOW_PWM_VERSION_PATCH       1
+  #define SAMD_SLOW_PWM_VERSION_PATCH       2
 
-  #define SAMD_SLOW_PWM_VERSION_INT         1002001
+  #define SAMD_SLOW_PWM_VERSION_INT         1002002
 #endif
 
-#include "TimerInterrupt_Generic_Debug.h"
+#include "PWM_Generic_Debug.h"
 
 #define TIMER_HZ      48000000L
 
@@ -348,8 +367,8 @@ class SAMDTimerInterrupt
       TC3->COUNT16.CTRLA.bit.ENABLE = 1;
       TC3_wait_for_sync();
       
-      TISR_LOGDEBUG3(F("SAMD51 TC3 period ="), period, F(", _prescaler ="), _prescaler);
-      TISR_LOGDEBUG1(F("_compareValue ="), _compareValue);
+      PWM_LOGDEBUG3(F("SAMD51 TC3 period ="), period, F(", _prescaler ="), _prescaler);
+      PWM_LOGDEBUG1(F("_compareValue ="), _compareValue);
     }
 }; // class SAMDTimerInterrupt
 
@@ -589,8 +608,8 @@ class SAMDTimerInterrupt
       
       while (_Timer->STATUS.bit.SYNCBUSY == 1);
       
-      TISR_LOGDEBUG3(F("SAMD21 TC3 period ="), period, F(", _prescaler ="), _prescaler);
-      TISR_LOGDEBUG1(F("_compareValue ="), _compareValue);
+      PWM_LOGDEBUG3(F("SAMD21 TC3 period ="), period, F(", _prescaler ="), _prescaler);
+      PWM_LOGDEBUG1(F("_compareValue ="), _compareValue);
     }
     
     void setPeriod_TIMER_TCC(const float& period)
@@ -678,8 +697,8 @@ class SAMDTimerInterrupt
 	    
       while (_Timer->SYNCBUSY.bit.CC0 == 1);
       
-      TISR_LOGDEBUG3(F("SAMD21 TCC period ="), period, F(", _prescaler ="), _prescaler);
-      TISR_LOGDEBUG1(F("_compareValue ="), _compareValue);
+      PWM_LOGDEBUG3(F("SAMD21 TCC period ="), period, F(", _prescaler ="), _prescaler);
+      PWM_LOGDEBUG1(F("_compareValue ="), _compareValue);
     } 
 }; // class SAMDTimerInterrupt
 

@@ -12,7 +12,7 @@
   Therefore, their executions are not blocked by bad-behaving functions / tasks.
   This important feature is absolutely necessary for mission-critical tasks.
 
-  Version: 1.2.1
+  Version: 1.2.2
 
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
@@ -20,6 +20,7 @@
   1.1.0   K Hoang      10/11/2021 Add functions to modify PWM settings on-the-fly
   1.2.0   K Hoang      31/01/2022 Fix multiple-definitions linker error. Improve accuracy. Change DutyCycle update
   1.2.1   K Hoang      01/02/2022 Use float for DutyCycle and Freq, uint32_t for period
+  1.2.2   K Hoang      02/03/2022 Use correct PWM_Generic_Debug.h file. Display informational warning when debug level > 3
 *****************************************************************************************************************************/
 
 #pragma once
@@ -53,8 +54,8 @@
     
     if (_timerNumber == TIMER_TC3)
     {    
-      TISR_LOGWARN3(F("SAMDTimerInterrupt: F_CPU (MHz) ="), F_CPU/1000000, F(", TIMER_HZ ="), TIMER_HZ/1000000);
-      TISR_LOGWARN3(F("TC_Timer::startTimer _Timer = 0x"), String((uint32_t) _SAMDTimer, HEX), F(", TC3 = 0x"), String((uint32_t) TC3, HEX));
+      PWM_LOGWARN3(F("SAMDTimerInterrupt: F_CPU (MHz) ="), F_CPU/1000000, F(", TIMER_HZ ="), TIMER_HZ/1000000);
+      PWM_LOGWARN3(F("TC_Timer::startTimer _Timer = 0x"), String((uint32_t) _SAMDTimer, HEX), F(", TC3 = 0x"), String((uint32_t) TC3, HEX));
 
       // Enable the TC bus clock, use clock generator 0
       GCLK->PCHCTRL[TC3_GCLK_ID].reg = GCLK_PCHCTRL_GEN_GCLK1_Val | (1 << GCLK_PCHCTRL_CHEN_Pos);
@@ -138,7 +139,7 @@
   {
     _period =  (1000000.0f / frequency);
     
-    TISR_LOGDEBUG3(F("_period ="), _period, F(", frequency ="), frequency);
+    PWM_LOGDEBUG3(F("_period ="), _period, F(", frequency ="), frequency);
     
     if (_timerNumber == TIMER_TC3)
     {    
@@ -146,8 +147,8 @@
       
       while ( GCLK->STATUS.bit.SYNCBUSY == 1 );
       
-      TISR_LOGWARN3(F("SAMDTimerInterrupt: F_CPU (MHz) ="), F_CPU/1000000, F(", TIMER_HZ ="), TIMER_HZ/1000000);
-      TISR_LOGWARN3(F("TC3_Timer::startTimer _Timer = 0x"), String((uint32_t) _SAMDTimer, HEX), F(", TC3 = 0x"), String((uint32_t) TC3, HEX));
+      PWM_LOGWARN3(F("SAMDTimerInterrupt: F_CPU (MHz) ="), F_CPU/1000000, F(", TIMER_HZ ="), TIMER_HZ/1000000);
+      PWM_LOGWARN3(F("TC3_Timer::startTimer _Timer = 0x"), String((uint32_t) _SAMDTimer, HEX), F(", TC3 = 0x"), String((uint32_t) TC3, HEX));
      
       SAMD_TC3->CTRLA.reg &= ~TC_CTRLA_ENABLE;
 
@@ -182,8 +183,8 @@
     
       while ( GCLK->STATUS.bit.SYNCBUSY == 1 );
       
-      TISR_LOGWARN3(F("SAMDTimerInterrupt: F_CPU (MHz) ="), F_CPU/1000000, F(", TIMER_HZ ="), TIMER_HZ/1000000);
-      TISR_LOGWARN3(F("TCC_Timer::startTimer _Timer = 0x"), String((uint32_t) _SAMDTimer, HEX), F(", TCC0 = 0x"), String((uint32_t) TCC0, HEX));
+      PWM_LOGWARN3(F("SAMDTimerInterrupt: F_CPU (MHz) ="), F_CPU/1000000, F(", TIMER_HZ ="), TIMER_HZ/1000000);
+      PWM_LOGWARN3(F("TCC_Timer::startTimer _Timer = 0x"), String((uint32_t) _SAMDTimer, HEX), F(", TCC0 = 0x"), String((uint32_t) TCC0, HEX));
      
       SAMD_TCC->CTRLA.reg &= ~TCC_CTRLA_ENABLE;   // Disable TC
       

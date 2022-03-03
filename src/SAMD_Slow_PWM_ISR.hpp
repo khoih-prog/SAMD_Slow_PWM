@@ -12,7 +12,7 @@
   Therefore, their executions are not blocked by bad-behaving functions / tasks.
   This important feature is absolutely necessary for mission-critical tasks.
 
-  Version: 1.2.1
+  Version: 1.2.2
 
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
@@ -20,6 +20,7 @@
   1.1.0   K Hoang      10/11/2021 Add functions to modify PWM settings on-the-fly
   1.2.0   K Hoang      31/01/2022 Fix multiple-definitions linker error. Improve accuracy. Change DutyCycle update
   1.2.1   K Hoang      01/02/2022 Use float for DutyCycle and Freq, uint32_t for period
+  1.2.2   K Hoang      02/03/2022 Use correct PWM_Generic_Debug.h file. Display informational warning when debug level > 3
 *****************************************************************************************************************************/
 
 #pragma once
@@ -85,12 +86,19 @@ typedef void (*timer_callback)();
 typedef void (*timer_callback_p)(void *);
 
 #if !defined(USING_MICROS_RESOLUTION)
-  #warning Not USING_MICROS_RESOLUTION, using millis resolution
+
+  #if (_PWM_LOGLEVEL_ > 3)
+    #warning Not USING_MICROS_RESOLUTION, using millis resolution
+  #endif
+    
   #define USING_MICROS_RESOLUTION       false
 #endif
 
 #if !defined(CHANGING_PWM_END_OF_CYCLE)
-  #warning Using default CHANGING_PWM_END_OF_CYCLE == true
+  #if (_PWM_LOGLEVEL_ > 3)
+    #warning Using default CHANGING_PWM_END_OF_CYCLE == true
+  #endif
+  
   #define CHANGING_PWM_END_OF_CYCLE     true
 #endif
 
