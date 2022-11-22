@@ -97,18 +97,21 @@ int8_t channelNum;
 void setup()
 {
   Serial.begin(115200);
+
   while (!Serial);
 
   delay(2000);
 
-  Serial.print(F("\nStarting ISR_Changing_PWM on ")); Serial.println(BOARD_NAME);
+  Serial.print(F("\nStarting ISR_Changing_PWM on "));
+  Serial.println(BOARD_NAME);
   Serial.println(SAMD_SLOW_PWM_VERSION);
 
   // Interval in microsecs
   if (ITimer.attachInterruptInterval(HW_TIMER_INTERVAL_US, TimerHandler))
   {
     startMicros = micros();
-    Serial.print(F("Starting ITimer OK, micros() = ")); Serial.println(startMicros);
+    Serial.print(F("Starting ITimer OK, micros() = "));
+    Serial.println(startMicros);
   }
   else
     Serial.println(F("Can't set ITimer. Select another freq. or timer"));
@@ -116,7 +119,10 @@ void setup()
 
 void loop()
 {
-  Serial.print(F("Using PWM Freq = ")); Serial.print(PWM_Freq1); Serial.print(F(", PWM DutyCycle = ")); Serial.println(PWM_DutyCycle1);
+  Serial.print(F("Using PWM Freq = "));
+  Serial.print(PWM_Freq1);
+  Serial.print(F(", PWM DutyCycle = "));
+  Serial.println(PWM_DutyCycle1);
 
 #if USING_PWM_FREQUENCY
 
@@ -137,7 +143,10 @@ void loop()
 
   ISR_PWM.deleteChannel((uint8_t) channelNum);
 
-  Serial.print(F("Using PWM Freq = ")); Serial.print(PWM_Freq2); Serial.print(F(", PWM DutyCycle = ")); Serial.println(PWM_DutyCycle2);
+  Serial.print(F("Using PWM Freq = "));
+  Serial.print(PWM_Freq2);
+  Serial.print(F(", PWM DutyCycle = "));
+  Serial.println(PWM_DutyCycle2);
 
 #if USING_PWM_FREQUENCY
 

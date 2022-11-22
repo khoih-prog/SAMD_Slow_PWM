@@ -26,7 +26,7 @@
 
 // Default is true, uncomment to false
 //#define CHANGING_PWM_END_OF_CYCLE     false
-  
+
 #define MAX_SAMD_PWM_FREQ            1000
 
 // To be included only in main(), .ino with setup() to avoid `Multiple Definitions` Linker Error
@@ -92,15 +92,15 @@ void TimerHandler()
 // You can assign pins here. Be carefull to select good pin to use or crash, e.g pin 6-11
 uint32_t PWM_Pin[] =
 {
-   LED_BUILTIN,   LED_BLUE,   LED_RED, PIN_D0, PIN_D1,  PIN_D2,  PIN_D3,  PIN_D4,
-         PIN_D5,    PIN_D6,    PIN_D7, PIN_D8, PIN_D9, PIN_D10, PIN_D11, PIN_D12
+  LED_BUILTIN,   LED_BLUE,   LED_RED, PIN_D0, PIN_D1,  PIN_D2,  PIN_D3,  PIN_D4,
+  PIN_D5,    PIN_D6,    PIN_D7, PIN_D8, PIN_D9, PIN_D10, PIN_D11, PIN_D12
 };
 
 // You can assign any interval for any timer here, in microseconds
 uint32_t PWM_Period[] =
 {
   10000000,    5000000,   333333,   250000,   200000,   166667,   142857,   125000,
-    111111,    100000,     66667,    50000,    40000,    33333,    25000,    20000
+  111111,    100000,     66667,    50000,    40000,    33333,    25000,    20000
 };
 
 // You can assign any interval for any timer here, in Hz
@@ -113,7 +113,7 @@ float PWM_Freq[] =
 // You can assign any interval for any timer here, in milliseconds
 float PWM_DutyCycle[] =
 {
-   5.00, 10.00, 20.00, 30.00, 40.00, 45.00, 50.00, 55.00,
+  5.00, 10.00, 20.00, 30.00, 40.00, 45.00, 50.00, 55.00,
   60.00, 65.00, 70.00, 75.00, 80.00, 85.00, 90.00, 95.00
 };
 
@@ -190,8 +190,8 @@ void doingSomething15()
 
 irqCallback irqCallbackStartFunc[] =
 {
-  doingSomething0,  doingSomething1,  doingSomething2,  doingSomething3, 
-  doingSomething4,  doingSomething5,  doingSomething6,  doingSomething7, 
+  doingSomething0,  doingSomething1,  doingSomething2,  doingSomething3,
+  doingSomething4,  doingSomething5,  doingSomething6,  doingSomething7,
   doingSomething8,  doingSomething9,  doingSomething10, doingSomething11,
   doingSomething12, doingSomething13, doingSomething14, doingSomething15
 };
@@ -199,25 +199,29 @@ irqCallback irqCallbackStartFunc[] =
 ////////////////////////////////////////////////
 
 void setup()
-{ 
+{
   Serial.begin(115200);
+
   while (!Serial);
 
   delay(2000);
 
-  Serial.print(F("\nStarting ISR_16_PWMs_Array on ")); Serial.println(BOARD_NAME);
+  Serial.print(F("\nStarting ISR_16_PWMs_Array on "));
+  Serial.println(BOARD_NAME);
   Serial.println(SAMD_SLOW_PWM_VERSION);
 
   // Interval in microsecs
   if (ITimer.attachInterruptInterval(HW_TIMER_INTERVAL_US, TimerHandler))
   {
     startMicros = micros();
-    Serial.print(F("Starting ITimer OK, micros() = ")); Serial.println(startMicros);
+    Serial.print(F("Starting ITimer OK, micros() = "));
+    Serial.println(startMicros);
   }
   else
     Serial.println(F("Can't set ITimer. Select another freq. or timer"));
 
 #if 1
+
   // Just to demonstrate, don't use too many ISR Timers if not absolutely necessary
   // You can use up to 16 timer for each ISR_PWM
   for (uint16_t i = 0; i < NUMBER_ISR_PWMS; i++)
@@ -231,16 +235,17 @@ void setup()
     ISR_PWM.setPWM(PWM_Pin[i], PWM_Freq[i], PWM_DutyCycle[i], irqCallbackStartFunc[i]);
 
 #else
-  #if USING_MICROS_RESOLUTION
+#if USING_MICROS_RESOLUTION
     // Or using period in microsecs resolution
     ISR_PWM.setPWM_Period(PWM_Pin[i], PWM_Period[i], PWM_DutyCycle[i], irqCallbackStartFunc[i]);
-  #else
+#else
     // Or using period in millisecs resolution
     ISR_PWM.setPWM_Period(PWM_Pin[i], PWM_Period[i] / 1000, PWM_DutyCycle[i], irqCallbackStartFunc[i]);
-  #endif
+#endif
 #endif
   }
-#endif  
+
+#endif
 }
 
 void loop()

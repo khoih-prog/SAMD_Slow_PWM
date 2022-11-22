@@ -2,12 +2,15 @@
 
 [![arduino-library-badge](https://www.ardu-badge.com/badge/SAMD_Slow_PWM.svg?)](https://www.ardu-badge.com/SAMD_Slow_PWM)
 [![GitHub release](https://img.shields.io/github/release/khoih-prog/SAMD_Slow_PWM.svg)](https://github.com/khoih-prog/SAMD_Slow_PWM/releases)
-[![GitHub](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/khoih-prog/SAMD_Slow_PWM/blob/master/LICENSE)
+[![GitHub](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/khoih-prog/SAMD_Slow_PWM/blob/main/LICENSE)
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](#Contributing)
 [![GitHub issues](https://img.shields.io/github/issues/khoih-prog/SAMD_Slow_PWM.svg)](http://github.com/khoih-prog/SAMD_Slow_PWM/issues)
 
+
 <a href="https://www.buymeacoffee.com/khoihprog6" title="Donate to my libraries using BuyMeACoffee"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Donate to my libraries using BuyMeACoffee" style="height: 50px !important;width: 181px !important;" ></a>
 <a href="https://www.buymeacoffee.com/khoihprog6" title="Donate to my libraries using BuyMeACoffee"><img src="https://img.shields.io/badge/buy%20me%20a%20coffee-donate-orange.svg?logo=buy-me-a-coffee&logoColor=FFDD00" style="height: 20px !important;width: 200px !important;" ></a>
+<a href="https://profile-counter.glitch.me/khoih-prog/count.svg" title="Total khoih-prog Visitor count"><img src="https://profile-counter.glitch.me/khoih-prog/count.svg" style="height: 30px;width: 200px;"></a>
+<a href="https://profile-counter.glitch.me/khoih-prog-SAMD_Slow_PWM/count.svg" title="SAMD_Slow_PWM Visitor count"><img src="https://profile-counter.glitch.me/khoih-prog-SAMD_Slow_PWM/count.svg" style="height: 30px;width: 200px;"></a>
 
 
 ---
@@ -83,14 +86,14 @@ As more complex calculation and check inside ISR are introduced from v1.2.0, the
 
 - For SAMD21 (slower) => using min 50uS and max 4 PWM channels
 
-```
+```cpp
 // Use 50uS for slow SAMD21
 #define HW_TIMER_INTERVAL_US      50L
 ```
 
 - For SAMD51 (faster) => using min 20uS and max 16 PWM channels
 
-```
+```cpp
 // Use 30uS for faster SAMD51
 #define HW_TIMER_INTERVAL_US      20L
 ```
@@ -172,8 +175,8 @@ The catch is **your function is now part of an ISR (Interrupt Service Routine), 
 
  1. [`Arduino IDE 1.8.19+` for Arduino](https://github.com/arduino/Arduino). [![GitHub release](https://img.shields.io/github/release/arduino/Arduino.svg)](https://github.com/arduino/Arduino/releases/latest)
  2. [`Arduino SAMD core 1.8.13+`](https://github.com/arduino/ArduinoCore-samd) for SAMD ARM Cortex-M0+ boards. [![GitHub release](https://img.shields.io/github/release/arduino/ArduinoCore-samd.svg)](https://github.com/arduino/ArduinoCore-samd/releases/latest)
- 3. [`Adafruit SAMD core 1.7.9+`](https://github.com/adafruit/ArduinoCore-samd) for SAMD ARM Cortex-M0+ and M4 boards (Nano 33 IoT, etc.). [![GitHub release](https://img.shields.io/github/release/adafruit/ArduinoCore-samd.svg)](https://github.com/adafruit/ArduinoCore-samd/releases/latest)
- 4. [`Seeeduino SAMD core 1.8.2+`](https://github.com/Seeed-Studio/ArduinoCore-samd) for SAMD21/SAMD51 boards (XIAO M0, Wio Terminal, etc.). [![Latest release](https://img.shields.io/github/release/Seeed-Studio/ArduinoCore-samd.svg)](https://github.com/Seeed-Studio/ArduinoCore-samd/releases/latest/)
+ 3. [`Adafruit SAMD core 1.7.11+`](https://github.com/adafruit/ArduinoCore-samd) for SAMD ARM Cortex-M0+ and M4 boards (Nano 33 IoT, etc.). [![GitHub release](https://img.shields.io/github/release/adafruit/ArduinoCore-samd.svg)](https://github.com/adafruit/ArduinoCore-samd/releases/latest)
+ 4. [`Seeeduino SAMD core 1.8.3+`](https://github.com/Seeed-Studio/ArduinoCore-samd) for SAMD21/SAMD51 boards (XIAO M0, Wio Terminal, etc.). [![Latest release](https://img.shields.io/github/release/Seeed-Studio/ArduinoCore-samd.svg)](https://github.com/Seeed-Studio/ArduinoCore-samd/releases/latest/)
  5. [`Sparkfun SAMD core 1.8.3+`](https://github.com/sparkfun/Arduino_Boards) for SAMD21/SAMD51 boards (SparkFun_RedBoard_Turbo, SparkFun_SAMD51_Thing_Plus, etc.).
 
  6. To use with certain example
@@ -195,9 +198,9 @@ You can also use this link [![arduino-library-badge](https://www.ardu-badge.com/
 Another way to install is to:
 
 1. Navigate to [**SAMD_Slow_PWM**](https://github.com/khoih-prog/SAMD_Slow_PWM) page.
-2. Download the latest release `SAMD_Slow_PWM-master.zip`.
-3. Extract the zip file to `SAMD_Slow_PWM-master` directory 
-4. Copy whole `SAMD_Slow_PWM-master` folder to Arduino libraries' directory such as `~/Arduino/libraries/`.
+2. Download the latest release `SAMD_Slow_PWM-main.zip`.
+3. Extract the zip file to `SAMD_Slow_PWM-main` directory 
+4. Copy whole `SAMD_Slow_PWM-main` folder to Arduino libraries' directory such as `~/Arduino/libraries/`.
 
 ### VS Code & PlatformIO
 
@@ -252,13 +255,13 @@ Whenever the above-mentioned compiler error issue is fixed with the new Arduino 
 
 #### 2. For Adafruit SAMD boards
  
- ***To be able to compile without error and automatically detect and display BOARD_NAME on Adafruit SAMD (Itsy-Bitsy M4, etc) boards***, you have to copy the files in [Adafruit SAMD Packages_Patches](Packages_Patches/adafruit/hardware/samd/1.7.9) into Adafruit samd directory (~/.arduino15/packages/adafruit/hardware/samd/1.7.9). 
+ ***To be able to compile without error and automatically detect and display BOARD_NAME on Adafruit SAMD (Itsy-Bitsy M4, etc) boards***, you have to copy the files in [Adafruit SAMD Packages_Patches](Packages_Patches/adafruit/hardware/samd/1.7.11) into Adafruit samd directory (~/.arduino15/packages/adafruit/hardware/samd/1.7.11). 
 
-Supposing the Adafruit SAMD core version is 1.7.9. This file must be copied into the directory:
+Supposing the Adafruit SAMD core version is 1.7.11. This file must be copied into the directory:
 
-- `~/.arduino15/packages/adafruit/hardware/samd/1.7.9/platform.txt`
-- `~/.arduino15/packages/adafruit/hardware/samd/1.7.9/cores/arduino/Print.h`
-- `~/.arduino15/packages/adafruit/hardware/samd/1.7.9/cores/arduino/Print.cpp`
+- `~/.arduino15/packages/adafruit/hardware/samd/1.7.11/platform.txt`
+- `~/.arduino15/packages/adafruit/hardware/samd/1.7.11/cores/arduino/Print.h`
+- `~/.arduino15/packages/adafruit/hardware/samd/1.7.11/cores/arduino/Print.cpp`
 
 Whenever a new version is installed, remember to copy this file into the new version directory. For example, new version is x.yy.zz
 This file must be copied into the directory:
@@ -269,14 +272,14 @@ This file must be copied into the directory:
 
 #### 3. For Seeeduino SAMD boards
  
- ***To be able to compile without error and automatically detect and display BOARD_NAME on Seeeduino SAMD (XIAO M0, Wio Terminal, etc) boards***, you have to copy the files in [Seeeduino SAMD Packages_Patches](Packages_Patches/Seeeduino/hardware/samd/1.8.2) into Seeeduino samd directory (~/.arduino15/packages/Seeeduino/hardware/samd/1.8.2). 
+ ***To be able to compile without error and automatically detect and display BOARD_NAME on Seeeduino SAMD (XIAO M0, Wio Terminal, etc) boards***, you have to copy the files in [Seeeduino SAMD Packages_Patches](Packages_Patches/Seeeduino/hardware/samd/1.8.3) into Seeeduino samd directory (~/.arduino15/packages/Seeeduino/hardware/samd/1.8.3). 
 
-Supposing the Seeeduino SAMD core version is 1.8.2. This file must be copied into the directory:
+Supposing the Seeeduino SAMD core version is 1.8.3. This file must be copied into the directory:
 
-- `~/.arduino15/packages/Seeeduino/hardware/samd/1.8.2/platform.txt`
-- `~/.arduino15/packages/Seeeduino/hardware/samd/1.8.2/cores/arduino/Arduino.h`
-- `~/.arduino15/packages/Seeeduino/hardware/samd/1.8.2/cores/arduino/Print.h`
-- `~/.arduino15/packages/Seeeduino/hardware/samd/1.8.2/cores/arduino/Print.cpp`
+- `~/.arduino15/packages/Seeeduino/hardware/samd/1.8.3/platform.txt`
+- `~/.arduino15/packages/Seeeduino/hardware/samd/1.8.3/cores/arduino/Arduino.h`
+- `~/.arduino15/packages/Seeeduino/hardware/samd/1.8.3/cores/arduino/Print.h`
+- `~/.arduino15/packages/Seeeduino/hardware/samd/1.8.3/cores/arduino/Print.cpp`
 
 Whenever a new version is installed, remember to copy this file into the new version directory. For example, new version is x.yy.zz
 This file must be copied into the directory:
@@ -314,14 +317,14 @@ The current library implementation, using `xyz-Impl.h` instead of standard `xyz.
 
 You can include this `.hpp` file
 
-```
+```cpp
 // Can be included as many times as necessary, without `Multiple Definitions` Linker Error
 #include "SAMD_Slow_PWM.hpp"     //https://github.com/khoih-prog/SAMD_Slow_PWM
 ```
 
 in many files. But be sure to use the following `.h` file **in just 1 `.h`, `.cpp` or `.ino` file**, which must **not be included in any other file**, to avoid `Multiple Definitions` Linker Error
 
-```
+```cpp
 // To be included only in main(), .ino with setup() to avoid `Multiple Definitions` Linker Error
 #include "SAMD_Slow_PWM.h"           //https://github.com/khoih-prog/SAMD_Slow_PWM
 ```
@@ -341,7 +344,7 @@ Before using any Timer for a PWM channel, you have to make sure the Timer has no
 
 #### 1. Init Hardware Timer
 
-```
+```cpp
 // Depending on the board, you can select SAMD21 Hardware Timer from TC3-TCC
 // SAMD21 Hardware Timer from TC3 or TCC
 // SAMD51 Hardware Timer only TC3
@@ -357,7 +360,7 @@ SAMD_Slow_PWM ISR_PWM;
 
 #### 2. Set PWM Frequency, dutycycle, attach irqCallbackStartFunc and irqCallbackStopFunc functions
 
-```
+```cpp
 void irqCallbackStartFunc()
 {
 
@@ -419,7 +422,7 @@ https://github.com/khoih-prog/SAMD_Slow_PWM/blob/da5c3ce61ffb704f206e72b65e8fd07
 The following is the sample terminal output when running example [ISR_16_PWMs_Array_Complex](examples/SAMD21/ISR_4_PWMs_Array_Complex) on SAMD_NANO_33_IOT to demonstrate how to use multiple PWM channels with complex callback functions, the accuracy of ISR Hardware PWM-channels, **especially when system is very busy**.  The ISR PWM-channels is **running exactly according to corresponding programmed periods and duty-cycles**
 
 
-```
+```cpp
 Starting ISR_4_PWMs_Array_Complex on SAMD_NANO_33_IOT
 SAMD_Slow_PWM v1.2.3
 Starting ITimer OK, micros() = 2750362
@@ -456,7 +459,7 @@ PWM Channel : 3, programmed Period (us): 200000.00, actual : 199999, programmed 
 The following is the sample terminal output when running example [ISR_16_PWMs_Array_Complex](examples/SAMD51/ISR_16_PWMs_Array_Complex) on ITSYBITSY_M4 to demonstrate how to use multiple PWM channels with complex callback functions, the accuracy of ISR Hardware PWM-channels, **especially when system is very busy**.  The ISR PWM-channels is **running exactly according to corresponding programmed periods and duty-cycles**
 
 
-```
+```cpp
 Starting ISR_16_PWMs_Array_Complex on ITSYBITSY_M4
 SAMD_Slow_PWM v1.2.3
 Starting ITimer OK, micros() = 3830244
@@ -519,7 +522,7 @@ PWM Channel : 15, programmed Period (us): 20000.00, actual : 20000, programmed D
 The following is the sample terminal output when running example [ISR_4_PWMs_Array_Complex](examples/SAMD21/ISR_16_PWMs_Array_Complex) on SEEED_XIAO_M0 to demonstrate how to use multiple PWM channels with complex callback functions, the accuracy of ISR Hardware PWM-channels, **especially when system is very busy**.  The ISR PWM-channels is **running exactly according to corresponding programmed periods and duty-cycles**
 
 
-```
+```cpp
 Starting ISR_16_PWMs_Array_Complex on SEEED_XIAO_M0
 SAMD_Slow_PWM v1.2.3
 Starting ITimer OK, micros() = 2681651
@@ -545,7 +548,7 @@ PWM Channel : 3, programmed Period (us): 50000, actual : 49999, programmed DutyC
 
 The following is the sample terminal output when running example [ISR_Modify_PWM](examples/SAMD21/ISR_Modify_PWM) on **SAMD_NANO_33_IOT** to demonstrate how to modify PWM settings on-the-fly without deleting the PWM channel
 
-```
+```cpp
 Starting ISR_Modify_PWM on SAMD_NANO_33_IOT
 SAMD_Slow_PWM v1.2.3
 [PWM] SAMDTimerInterrupt: F_CPU (MHz) = 48 , TIMER_HZ = 48
@@ -573,7 +576,7 @@ Channel : 0	    Period : 5000		OnTime : 50	Start_Time : 123767440
 
 The following is the sample terminal output when running example [ISR_Changing_PWM](examples/SAMD21/ISR_Changing_PWM) on **SAMD_NANO_33_IOT** to demonstrate how to modify PWM settings on-the-fly by deleting the PWM channel and reinit the PWM channel
 
-```
+```cpp
 Starting ISR_Changing_PWM on SAMD_NANO_33_IOT
 SAMD_Slow_PWM v1.2.3
 Starting ITimer OK, micros() = 2820370
@@ -599,7 +602,7 @@ Channel : 0	    Period : 1000000		OnTime : 500000	Start_Time : 62827189
 
 The following is the sample terminal output when running example [ISR_Modify_PWM](examples/SAMD51/ISR_Modify_PWM) on **ITSYBITSY_M4** to demonstrate how to modify PWM settings on-the-fly without deleting the PWM channel
 
-```
+```cpp
 Starting ISR_Modify_PWM on ITSYBITSY_M4
 SAMD_Slow_PWM v1.2.3
 Starting ITimer OK, micros() = 3320212
@@ -630,7 +633,7 @@ Channel : 0	New Period : 500000		OnTime : 450000	Start_Time : 172820852
 
 The following is the sample terminal output when running example [ISR_Changing_PWM](examples/SAMD51/ISR_Changing_PWM) on **ITSYBITSY_M4** to demonstrate how to modify PWM settings on-the-fly by deleting the PWM channel and reinit the PWM channel
 
-```
+```cpp
 Starting ISR_Changing_PWM on ITSYBITSY_M4
 SAMD_Slow_PWM v1.2.3
 Starting ITimer OK, micros() = 3660252
@@ -727,12 +730,12 @@ If you want to contribute to this project:
 
 ### License
 
-- The library is licensed under [MIT](https://github.com/khoih-prog/SAMD_Slow_PWM/blob/master/LICENSE)
+- The library is licensed under [MIT](https://github.com/khoih-prog/SAMD_Slow_PWM/blob/main/LICENSE)
 
 ---
 
 ## Copyright
 
-Copyright 2021- Khoi Hoang
+Copyright (c) 2021- Khoi Hoang
 
 

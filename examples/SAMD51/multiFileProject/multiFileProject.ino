@@ -1,6 +1,6 @@
 /****************************************************************************************************************************
   multiFileProject.ino
-  
+
   For SAMD21/SAMD51 boards
   Written by Khoi Hoang
 
@@ -22,24 +22,27 @@
 // To be included only in main(), .ino with setup() to avoid `Multiple Definitions` Linker Error
 #include "SAMD_Slow_PWM.h"
 
-void setup() 
+void setup()
 {
   Serial.begin(115200);
+
   while (!Serial);
-  
+
   Serial.println("\nStart multiFileProject");
   Serial.println(SAMD_SLOW_PWM_VERSION);
 
 #if defined(SAMD_SLOW_PWM_VERSION_MIN)
+
   if (SAMD_SLOW_PWM_VERSION_INT < SAMD_SLOW_PWM_VERSION_MIN)
   {
     Serial.print("Warning. Must use this example on Version equal or later than : ");
     Serial.println(SAMD_SLOW_PWM_VERSION_MIN_TARGET);
   }
+
 #endif
 }
 
-void loop() 
+void loop()
 {
   // put your main code here, to run repeatedly:
 }

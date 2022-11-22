@@ -17,7 +17,7 @@
     || defined(ARDUINO_SAMD_NANO_33_IOT) || defined(ARDUINO_SAMD_MKRFox1200) || defined(ARDUINO_SAMD_MKRWAN1300) || defined(ARDUINO_SAMD_MKRWAN1310) \
     || defined(ARDUINO_SAMD_MKRGSM1400) || defined(ARDUINO_SAMD_MKRNB1500) || defined(ARDUINO_SAMD_MKRVIDOR4000) || defined(__SAMD21G18A__) \
     || defined(ARDUINO_SAMD_CIRCUITPLAYGROUND_EXPRESS) || defined(__SAMD21G18A__) )
-  #error This code is designed to run on SAMD21 platform! Please check your Tools->Board setting.
+#error This code is designed to run on SAMD21 platform! Please check your Tools->Board setting.
 #endif
 
 // These define's must be placed at the beginning before #include "SAMD_Slow_PWM.h"
@@ -28,7 +28,7 @@
 
 // Default is true, uncomment to false
 //#define CHANGING_PWM_END_OF_CYCLE     false
-  
+
 #define MAX_SAMD_PWM_FREQ            1000
 
 // To be included only in main(), .ino with setup() to avoid `Multiple Definitions` Linker Error
@@ -103,23 +103,29 @@ int channelNum;
 void setup()
 {
   Serial.begin(115200);
+
   while (!Serial);
 
   delay(2000);
 
-  Serial.print(F("\nStarting ISR_Modify_PWM on ")); Serial.println(BOARD_NAME);
+  Serial.print(F("\nStarting ISR_Modify_PWM on "));
+  Serial.println(BOARD_NAME);
   Serial.println(SAMD_SLOW_PWM_VERSION);
 
   // Interval in microsecs
   if (ITimer.attachInterruptInterval(HW_TIMER_INTERVAL_US, TimerHandler))
   {
     startMicros = micros();
-    Serial.print(F("Starting ITimer OK, micros() = ")); Serial.println(startMicros);
+    Serial.print(F("Starting ITimer OK, micros() = "));
+    Serial.println(startMicros);
   }
   else
     Serial.println(F("Can't set ITimer. Select another freq. or timer"));
 
-  Serial.print(F("Using PWM Freq = ")); Serial.print(PWM_Freq1); Serial.print(F(", PWM DutyCycle = ")); Serial.println(PWM_DutyCycle1);
+  Serial.print(F("Using PWM Freq = "));
+  Serial.print(PWM_Freq1);
+  Serial.print(F(", PWM DutyCycle = "));
+  Serial.println(PWM_DutyCycle1);
 
 #if USING_PWM_FREQUENCY
 
